@@ -1,3 +1,5 @@
+import React from "react";
+
 function Contact() {
   return (
     <section className="contact">
@@ -10,20 +12,48 @@ function Contact() {
 const ContactForm = () => {
   return (
     <form className="contact-form">
-      <div className="form-group">
-        <label htmlFor="name">Nom</label>
-        <input type="text" id="name" name="name" required />
-      </div>
-      <div className="form-group">
-        <label htmlFor="email">E-mail</label>
-        <input type="email" id="email" name="email" required />
-      </div>
-      <div className="form-group">
-        <label htmlFor="message">Message</label>
-        <textarea id="message" name="message" required rows="10"></textarea>
-      </div>
+      <FormGroup
+        label="Nom"
+        id="name"
+        name="name"
+        type="text"
+        required={true}
+      />
+      <FormGroup
+        label="E-mail"
+        id="email"
+        name="email"
+        type="email"
+        required={true}
+      />
+      <FormGroup
+        label="Message"
+        id="message"
+        name="message"
+        type="textarea"
+        required={true}
+        rows={10}
+      />
       <button type="submit">Envoyer</button>
     </form>
+  );
+};
+
+const FormGroup = ({ label, id, name, type, required, rows }) => {
+  return (
+    <div className="form-group">
+      <label htmlFor={id}>{label}</label>
+      {type === "textarea" ? (
+        <textarea
+          id={id}
+          name={name}
+          required={required}
+          rows={rows}
+        ></textarea>
+      ) : (
+        <input type={type} id={id} name={name} required={required} />
+      )}
+    </div>
   );
 };
 
