@@ -27,7 +27,7 @@ function Footer() {
 
 function FooterHeader() {
   return (
-    <a href="/">
+    <a href="/#/">
       <img className="logo" src={logo} alt="Focus logo" />
       <h1>Focus</h1>
     </a>
