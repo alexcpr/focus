@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/focus/static/css/main.e17376d9.css",
+    "main.js": "/focus/static/js/main.cb35da95.js",
+    "static/media/hero.png": "/focus/static/media/hero.4cd29e8efd7a54c07453.png",
+    "index.html": "/focus/index.html",
+    "main.e17376d9.css.map": "/focus/static/css/main.e17376d9.css.map",
+    "main.cb35da95.js.map": "/focus/static/js/main.cb35da95.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e17376d9.css",
+    "static/js/main.cb35da95.js"
+  ]
+}
