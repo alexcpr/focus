@@ -71,7 +71,6 @@ function FooterBottom() {
         </a>{" "}
         avec <span className="heart">❤</span>
       </p>
-      {/* <p>No cookies 🍪 Just colors 🎨 and fonts 🔡</p> */}
       <small>© 2024 Focus. Tous droits reservés.</small>
     </div>
   );
