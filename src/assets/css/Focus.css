@@ -189,10 +189,6 @@ footer {
     text-transform: uppercase;
 }
 
-.donate-button img:last-child {
-    display: none;
-}
-
 footer p {
     display: block;
 }
