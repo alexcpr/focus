@@ -1,16 +1,29 @@
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { FaHome, FaRegUser } from "react-icons/fa";
 import { IoMdPhotos, IoMdClose } from "react-icons/io";
 import { GrContact } from "react-icons/gr";
+import { GrLogin } from "react-icons/gr";
 import logo from "./assets/img/logo.png";
+import { isLoggedIn } from "./utils/auth";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    async function checkLoginStatus() {
+      const isLoggedInValue = await isLoggedIn();
+      setLoggedIn(isLoggedInValue);
+    }
+    checkLoginStatus();
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
   return (
     <header>
       <HeaderLogo />
@@ -27,12 +40,30 @@ function Header() {
           icon={IoMdPhotos}
           onClick={toggleMenu}
         />
-        <HeaderLink
-          url="/#/account"
-          text="Compte"
-          icon={FaRegUser}
-          onClick={toggleMenu}
-        />
+        {loggedIn && (
+          <HeaderLink
+            url="/#/account"
+            text="Compte"
+            icon={FaRegUser}
+            onClick={toggleMenu}
+          />
+        )}
+        {!loggedIn && (
+          <HeaderLink
+            url="/#/login"
+            text="Connexion"
+            icon={GrLogin}
+            onClick={toggleMenu}
+          />
+        )}
+        {!loggedIn && (
+          <HeaderLink
+            url="/#/register"
+            text="Inscription"
+            icon={GrLogin}
+            onClick={toggleMenu}
+          />
+        )}
         <HeaderLink
           url="/#/contact"
           text="Contact"
@@ -74,7 +105,6 @@ function HeaderLink({ url, text, icon: Icon, onClick }) {
     </a>
   );
 }
-
 
 function BurgerMenuIcon({ isMenuOpen, toggleMenu }) {
   return (

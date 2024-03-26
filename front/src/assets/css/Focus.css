@@ -241,19 +241,25 @@ footer p {
     pointer-events: none;
 }
 
-.contact {
+.contact,
+.login,
+.register {
     padding: 0 200px;
     display: flex;
     flex-flow: column wrap;
     align-items: center;
 }
 
-.contact h1 {
+.contact h1,
+.login h1,
+.register h1 {
     font-size: 36px;
 
 }
 
-.contact-form {
+.contact-form,
+.login-form,
+.register-form {
     width: 50%;
     display: flex;
     flex-flow: column wrap;
@@ -273,8 +279,7 @@ label::after {
     color: red;
 }
 
-input[type="text"],
-input[type="email"],
+input,
 textarea {
     width: 100%;
     padding: 10px;
@@ -286,7 +291,9 @@ textarea {
     resize: vertical;
 }
 
-.contact-form button {
+.contact-form button,
+.login-form button,
+.register-form button {
     width: 150px;
     margin: 0 auto;
 }
@@ -324,11 +331,13 @@ button:hover {
         display: flex;
         opacity: 0;
         max-height: 0;
+        pointer-events: none;
         transition: max-height 0.8s ease, opacity 0.5s ease;
     }
 
     .links.menu-open {
         opacity: 1;
+        pointer-events: all;
         max-height: 200px;
     }
 
@@ -359,11 +368,16 @@ button:hover {
         flex-flow: column-reverse;
     }
 
-    .gallery, .contact {
+    .gallery,
+    .contact,
+    .login,
+    .register {
         padding: 0 25px;
     }
 
-    .contact-form {
+    .contact-form,
+    .login-form,
+    .register-form {
         width: 100%;
     }
 
