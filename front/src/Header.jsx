@@ -3,8 +3,8 @@ import { useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { FaHome, FaRegUser } from "react-icons/fa";
 import { IoMdPhotos, IoMdClose } from "react-icons/io";
-import { GrContact } from "react-icons/gr";
-import { GrLogin } from "react-icons/gr";
+import { GrContact, GrLogin } from "react-icons/gr";
+import { SlLogout } from "react-icons/sl";
 import logo from "./assets/img/logo.png";
 import { isLoggedIn } from "./utils/auth";
 
@@ -22,6 +22,11 @@ function Header() {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.hash = "#/login";
   };
 
   return (
@@ -46,6 +51,14 @@ function Header() {
             text="Compte"
             icon={FaRegUser}
             onClick={toggleMenu}
+          />
+        )}
+        {loggedIn && (
+          <HeaderLink
+            url={null}
+            text="Déconnexion"
+            icon={SlLogout}
+            onClick={handleLogout}
           />
         )}
         {!loggedIn && (

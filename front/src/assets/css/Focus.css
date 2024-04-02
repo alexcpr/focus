@@ -75,6 +75,7 @@ footer>a {
     color: var(--text);
     font-size: 16px;
     transition: opacity 0.3s ease;
+    cursor: pointer;
 }
 
 .links a svg {
