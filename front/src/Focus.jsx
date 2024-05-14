@@ -43,6 +43,16 @@ function Focus() {
           }
         />
         <Route
+          path="/gallery/:id"
+          element={
+            <>
+              <Header />
+              <Gallery />
+              <Footer />
+            </>
+          }
+        />
+        <Route
           path="/contact"
           element={
             <>

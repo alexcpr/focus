@@ -51,11 +51,9 @@ app.post("/register", (req, res) => {
             res.status(500).json({ error: "Erreur interne du serveur" });
             return;
           }
-          const token = jwt.sign(
-            { email: email },
-            "bKP4SsVq8keD0o4J",
-            { expiresIn: "1h" }
-          );
+          const token = jwt.sign({ email: email }, "bKP4SsVq8keD0o4J", {
+            expiresIn: "1h",
+          });
 
           res.json({ token });
         }
@@ -116,7 +114,87 @@ app.post("/verify", (req, res) => {
   });
 });
 
+app.get("/gallery", (req, res) => {
+  connection.query("SELECT * FROM gallery", (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la requête SQL : ", err);
+      res.status(500).json({ error: "Erreur interne du serveur" });
+      return;
+    }
+    res.json(results);
+  });
+});
 
+app.get("/gallery/:id", (req, res) => {
+  const { id } = req.params;
+  connection.query(
+    "SELECT * FROM gallery WHERE id = ?",
+    [id],
+    (err, results) => {
+      if (err) {
+        console.error("Erreur lors de la requête SQL : ", err);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+        return;
+      }
+      if (results.length === 0) {
+        res.status(404).json({ error: "Image non trouvée" });
+        return;
+      }
+      res.json(results[0]);
+    }
+  );
+});
+
+app.get("/gallery/:id/comments", (req, res) => {
+  const { id } = req.params;
+  connection.query(
+    "SELECT * FROM comments WHERE image_id = ?",
+    [id],
+    (err, results) => {
+      if (err) {
+        console.error("Erreur lors de la requête SQL : ", err);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+        return;
+      }
+      res.json(results);
+    }
+  );
+});
+
+app.post("/gallery/:id/comments", (req, res) => {
+  const { id } = req.params;
+  const { text } = req.body;
+
+  connection.query(
+    "INSERT INTO comments (image_id, text) VALUES (?, ?)",
+    [id, text],
+    (err, results) => {
+      if (err) {
+        console.error("Erreur lors de la requête SQL : ", err);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+        return;
+      }
+      res.json({ message: "Commentaire ajoutée avec succès" });
+    }
+  );
+});
+
+// app.delete("/gallery/comments/:commentId", (req, res) => {
+//   const { commentId } = req.params;
+
+//   connection.query(
+//     "DELETE FROM comments WHERE id = ?",
+//     [commentId],
+//     (err, results) => {
+//       if (err) {
+//         console.error("Erreur lors de la requête SQL : ", err);
+//         res.status(500).json({ error: "Erreur interne du serveur" });
+//         return;
+//       }
+//       res.json({ message: "Commentaire supprimée avec succès" });
+//     }
+//   );
+// });
 
 app.listen(port, () => {
   console.log(`Serveur démarré sur le port ${port}`);

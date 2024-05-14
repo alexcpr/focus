@@ -209,7 +209,87 @@ footer p {
     gap: 25px;
 }
 
-.gallery-grid img {
+.item-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.comment-section button {
+    margin: 15px 0;
+}
+
+.comment {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px 0;
+    column-gap: 50px;
+}
+
+.comment span {
+    text-align: justify;
+}
+
+.comment small {
+    flex: 0 0 auto;
+}
+
+.item-container .gallery-item {
+    flex: 0 0 auto;
+    margin-right: 50px
+}
+
+.item-container .gallery-item-description {
+    flex: 1 1 auto;
+}
+
+.item-container .gallery-item-description h1,
+.comment-section h2 {
+    margin-bottom: 0;
+}
+
+.item-container .gallery-item img {
+    height: 500px;
+}
+
+.item-container .gallery-item .vignette {
+    height: 500px;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    overflow: auto;
+}
+
+.modal-content img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    margin: 0 auto;
+}
+
+.modal-open {
+    overflow: hidden;
+}
+
+.gallery-item img {
     width: 100%;
     height: 100%;
     border-radius: 10px;
@@ -229,6 +309,7 @@ footer p {
     display: inline-block;
     transition: transform 0.3s ease;
     border-radius: 10px;
+    min-height: 125px;
 }
 
 .vignette {
@@ -339,7 +420,7 @@ button:hover {
     .links.menu-open {
         opacity: 1;
         pointer-events: all;
-        max-height: 200px;
+        max-height: 225px;
     }
 
     .burger-menu {
@@ -397,5 +478,21 @@ button:hover {
 
     .hero-text p {
         width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .comment {
+        flex-direction: column;
+    }
+
+    .item-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .item-container .gallery-item {
+        margin-right: 0;
+        margin-bottom: 20px;
     }
 }
