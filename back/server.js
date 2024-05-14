@@ -196,6 +196,24 @@ app.post("/gallery/:id/comments", (req, res) => {
 //   );
 // });
 
+app.post("/contact", (req, res) => {
+  const { name, email, message } = req.body;
+
+  connection.query(
+    "INSERT INTO contact (name, email, message) VALUES (?, ?, ?)",
+    [name, email, message],
+    (err, results) => {
+      if (err) {
+        console.error("Erreur lors de la requête SQL : ", err);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+        return;
+      }
+      res.json({ message: "Message envoyé avec succès" });
+    }
+  );
+});
+
+
 app.listen(port, () => {
   console.log(`Serveur démarré sur le port ${port}`);
 });
