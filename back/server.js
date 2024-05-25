@@ -40,7 +40,7 @@ app.post("/register", (req, res) => {
       }
 
       connection.query(
-        "INSERT INTO utilisateurs (email, mot_de_passe) VALUES (?, ?)",
+        "INSERT INTO users (email, password) VALUES (?, ?)",
         [email, hash],
         (err, results) => {
           if (err) {
@@ -66,7 +66,7 @@ app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
   connection.query(
-    "SELECT * FROM utilisateurs WHERE email = ?",
+    "SELECT * FROM users WHERE email = ?",
     [email],
     (err, results) => {
       if (err) {
@@ -81,7 +81,7 @@ app.post("/login", (req, res) => {
       }
 
       const user = results[0];
-      bcrypt.compare(password, user.mot_de_passe, (err, result) => {
+      bcrypt.compare(password, user.password, (err, result) => {
         if (err || !result) {
           res.status(401).json({ error: "E-mail ou mot de passe incorrect" });
           return;
@@ -212,7 +212,6 @@ app.post("/contact", (req, res) => {
     }
   );
 });
-
 
 app.listen(port, () => {
   console.log(`Serveur démarré sur le port ${port}`);
