@@ -418,12 +418,16 @@ footer p {
 }
 
 .item-container .gallery-item-description {
-    flex: 1 1 auto;
+    flex: 1 1 50%;
 }
 
 .item-container .gallery-item-description h1,
 .comment-section h2 {
     margin-bottom: 0;
+}
+
+.gallery-item-description p {
+    text-align: justify;
 }
 
 .item-container .gallery-item img {

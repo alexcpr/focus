@@ -165,7 +165,7 @@ function Gallery() {
           <div className="item-container">
             <div className="gallery-item" key={galleryItems[0].id}>
               <img
-                src={`${galleryItems[0].file_name}?v=${galleryItems[0].id}`}
+                src={`${window.location.origin}/images/${galleryItems[0].file_name}`}
                 onClick={() => openModal(galleryItems[0])}
               />
               <div className="vignette"></div>
@@ -185,7 +185,7 @@ function Gallery() {
           {galleryItems.map((item) => (
             <div className="gallery-item" key={item.id}>
               <img
-                src={`${item.file_name}?v=${item.id}`}
+                src={`${window.location.origin}/images/${item.file_name}`}
                 onClick={() => navigate(`/gallery/${item.id}`)}
               />
               <div className="vignette"></div>
@@ -197,7 +197,7 @@ function Gallery() {
         <div className="modal" onClick={closeModal}>
           <div className="modal-content">
             <img
-              src={`${selectedImage.file_name}?v=${selectedImage.id}`}
+              src={`${window.location.origin}/images/${selectedImage.file_name}`}
               alt={selectedImage.description}
             />
           </div>
