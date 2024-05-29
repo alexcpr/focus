@@ -25,17 +25,46 @@ app.use(express.json());
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res.status(400).json({ error: "Veuillez remplir tous les champs." });
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res
+      .status(400)
+      .json({ error: "Veuillez saisir une adresse e-mail valide." });
+  }
+
+  if (password.length < 4) {
+    return res.status(400).json({
+      error:
+        "Le mot de passe doit contenir au moins 4 caractères.\nVeuillez réessayer.",
+    });
+  }
+
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{4,}$/;
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({
+      error:
+        "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.\nVeuillez réessayer.",
+    });
+  }
+
   bcrypt.genSalt(10, (err, salt) => {
     if (err) {
-      console.error("Erreur lors de la génération du sel : ", err);
-      res.status(500).json({ error: "Erreur interne du serveur" });
+      res.status(500).json({
+        error: "Une erreur inattendue s'est produite.\nVeuillez réessayer.",
+      });
       return;
     }
 
     bcrypt.hash(password, salt, (err, hash) => {
       if (err) {
-        console.error("Erreur lors du chiffrement du mot de passe : ", err);
-        res.status(500).json({ error: "Erreur interne du serveur" });
+        res.status(500).json({
+          error: "Une erreur inattendue s'est produite.\nVeuillez réessayer.",
+        });
         return;
       }
 
@@ -44,18 +73,12 @@ app.post("/register", (req, res) => {
         [email, hash],
         (err, results) => {
           if (err) {
-            console.error(
-              "Erreur lors de l'insertion dans la base de données : ",
-              err
-            );
-            res.status(500).json({ error: "Erreur interne du serveur" });
+            res.status(500).json({
+              error: "Adresse e-mail déjà utilisée.\nVeuillez réessayer.",
+            });
             return;
           }
-          const token = jwt.sign({ email: email }, "bKP4SsVq8keD0o4J", {
-            expiresIn: "1h",
-          });
-
-          res.json({ token });
+          res.status(200).json({ message: "Utilisateur créé avec succès." });
         }
       );
     });
@@ -70,20 +93,26 @@ app.post("/login", (req, res) => {
     [email],
     (err, results) => {
       if (err) {
-        console.error("Erreur lors de la requête SQL : ", err);
-        res.status(500).json({ error: "Erreur interne du serveur" });
+        res.status(500).json({
+          error: "Une erreur inattendue s'est produite.\nVeuillez réessayer.",
+        });
         return;
       }
 
       if (results.length === 0) {
-        res.status(401).json({ error: "E-mail ou mot de passe incorrect" });
+        // En réalité il n'y a pas d'utilisateur avec cet e-mail mais on renvoie le même message pour éviter les attaques par force brute (l'attaquant ne saura pas si l'e-mail existe ou non)
+        res.status(401).json({
+          error: "E-mail ou mot de passe incorrect.\nVeuillez réessayer.",
+        });
         return;
       }
 
       const user = results[0];
       bcrypt.compare(password, user.password, (err, result) => {
         if (err || !result) {
-          res.status(401).json({ error: "E-mail ou mot de passe incorrect" });
+          res.status(401).json({
+            error: "E-mail ou mot de passe incorrect.\nVeuillez réessayer.",
+          });
           return;
         }
 
