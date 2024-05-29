@@ -13,6 +13,7 @@ import Hero from "./Hero";
 import Gallery from "./Gallery";
 import Contact from "./Contact";
 import Login from "./Login";
+import Admin from "./Admin";
 import Register from "./Register";
 import Account from "./Account";
 import Footer from "./Footer";
@@ -78,6 +79,16 @@ function Focus() {
             <>
               <Header />
               <Login />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <>
+              <Header />
+              <Admin />
               <Footer />
             </>
           }

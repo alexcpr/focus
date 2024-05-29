@@ -116,14 +116,64 @@ app.post("/login", (req, res) => {
           return;
         }
 
-        const token = jwt.sign(
-          { userId: user.id, email: user.email },
-          "bKP4SsVq8keD0o4J",
-          { expiresIn: "1h" }
-        );
+        let tokenPayload = { userId: user.id, email: user.email };
+
+        if (user.LSPF5cc3NPHgOQbtIzCjPyQxC4LyCFrM !== null) {
+          tokenPayload.hKhDTg2rpde1SaDVm8CKBhjDb2jIXqIE = 1;
+        }
+
+        const token = jwt.sign(tokenPayload, "bKP4SsVq8keD0o4J", {
+          expiresIn: "1h",
+        });
 
         res.json({ token });
       });
+    }
+  );
+});
+
+app.post("/loginadmin", (req, res) => {
+  const { email, password } = req.body;
+
+  connection.query(
+    "SELECT * FROM users WHERE email = ?",
+    [email],
+    (err, results) => {
+      if (err) {
+        res.status(500).json({
+          error: "Une erreur inattendue s'est produite.\nVeuillez réessayer.",
+        });
+        return;
+      }
+
+      if (results.length === 0) {
+        res.status(401).json({
+          error: "E-mail ou mot de passe incorrect.\nVeuillez réessayer.",
+        });
+        return;
+      }
+
+      const user = results[0];
+      bcrypt.compare(
+        password,
+        user.LSPF5cc3NPHgOQbtIzCjPyQxC4LyCFrM,
+        (err, result) => {
+          if (err || !result) {
+            res.status(401).json({
+              error: "E-mail ou mot de passe incorrect.\nVeuillez réessayer.",
+            });
+            return;
+          }
+
+          let tokenPayload = { userId: user.id, email: user.email };
+
+          const token = jwt.sign(tokenPayload, "E5vJNoXOAvNDVbel", {
+            expiresIn: "1h",
+          });
+
+          res.json({ token });
+        }
+      );
     }
   );
 });
@@ -136,6 +186,21 @@ app.post("/verify", (req, res) => {
   }
 
   jwt.verify(token, "bKP4SsVq8keD0o4J", (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Token invalide" });
+    }
+    res.status(200).json({ message: "Token valide" });
+  });
+});
+
+app.post("/verifyadmin", (req, res) => {
+  // middleware pour vérifier le token admin
+  const token = req.body.token;
+  if (!token) {
+    return res.status(401).json({ error: "Token non fourni" });
+  }
+
+  jwt.verify(token, "E5vJNoXOAvNDVbel", (err, decoded) => {
     if (err) {
       return res.status(401).json({ error: "Token invalide" });
     }

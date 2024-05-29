@@ -1,23 +1,27 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { FaHome, FaRegUser } from "react-icons/fa";
 import { IoMdPhotos, IoMdClose } from "react-icons/io";
 import { GrContact, GrLogin } from "react-icons/gr";
 import { SlLogout } from "react-icons/sl";
 import logo from "./assets/img/logo.png";
-import { isLoggedIn } from "./utils/auth";
+import { isLoggedIn, checkAdmin } from "./utils/auth";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    async function checkLoginStatus() {
+    async function fetchData() {
       const isLoggedInValue = await isLoggedIn();
       setLoggedIn(isLoggedInValue);
+      if (isLoggedInValue) {
+        const isAdminValue = await fetchAdminStatus();
+        setIsAdmin(isAdminValue);
+      }
     }
-    checkLoginStatus();
+    fetchData();
   }, []);
 
   const toggleMenu = () => {
@@ -26,8 +30,14 @@ function Header() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("tokenadmin");
     window.location.hash = "#/login";
   };
+
+  async function fetchAdminStatus() {
+    const isAdminValue = await checkAdmin();
+    return isAdminValue;
+  }
 
   return (
     <header>
@@ -49,6 +59,14 @@ function Header() {
           <HeaderLink
             url="/#/account"
             text="Compte"
+            icon={FaRegUser}
+            onClick={toggleMenu}
+          />
+        )}
+        {isAdmin && (
+          <HeaderLink
+            url="/#/admin"
+            text="Admin"
             icon={FaRegUser}
             onClick={toggleMenu}
           />
