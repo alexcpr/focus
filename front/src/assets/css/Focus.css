@@ -656,7 +656,7 @@ button:hover {
     .links.menu-open {
         opacity: 1;
         pointer-events: all;
-        max-height: 225px;
+        max-height: 10%;
     }
 
     .burger-menu {
