@@ -307,6 +307,111 @@ app.post("/contact", (req, res) => {
   );
 });
 
+app.get("/getmessages", (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ error: "Token non fourni" });
+  }
+
+  jwt.verify(token, "bKP4SsVq8keD0o4J", (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Token invalide" });
+    }
+
+    const id = decoded.userId;
+
+    connection.query(
+      "SELECT * FROM contact WHERE userId = ?",
+      [id],
+      (err, results) => {
+        if (err) {
+          res.status(500).json({
+            error: "Une erreur inattendue s'est produite.\nVeuillez réessayer.",
+          });
+          return;
+        }
+        res.json(results);
+      }
+    );
+  });
+});
+
+app.post("/changepassword", (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    return res.status(400).json({ error: "Veuillez remplir tous les champs." });
+  }
+
+  if (!token) {
+    return res.status(401).json({ error: "Token non fourni" });
+  }
+
+  jwt.verify(token, "bKP4SsVq8keD0o4J", (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Token invalide" });
+    }
+
+    const userId = decoded.userId;
+
+    connection.query(
+      "SELECT * FROM users WHERE id = ?",
+      [userId],
+      (err, results) => {
+        if (err || results.length === 0) {
+          return res.status(500).json({ error: "Utilisateur non trouvé." });
+        }
+
+        const user = results[0];
+        bcrypt.compare(currentPassword, user.password, (err, isMatch) => {
+          if (err || !isMatch) {
+            return res
+              .status(401)
+              .json({ error: "Mot de passe actuel incorrect." });
+          }
+
+          if (newPassword !== confirmPassword) {
+            return res.status(400).json({
+              error:
+                "Le nouveau mot de passe et le mot de passe de confirmation ne correspondent pas.",
+            });
+          }
+
+          bcrypt.genSalt(10, (err, salt) => {
+            if (err) {
+              return res
+                .status(500)
+                .json({ error: "Erreur de génération de salt." });
+            }
+
+            bcrypt.hash(newPassword, salt, (err, hash) => {
+              if (err) {
+                return res
+                  .status(500)
+                  .json({ error: "Erreur de hachage du mot de passe." });
+              }
+
+              connection.query(
+                "UPDATE users SET password = ? WHERE id = ?",
+                [hash, userId],
+                (err) => {
+                  if (err) {
+                    return res.status(500).json({
+                      error: "Erreur lors de la mise à jour du mot de passe.",
+                    });
+                  }
+                  res.json({ message: "Mot de passe mis à jour avec succès." });
+                }
+              );
+            });
+          });
+        });
+      }
+    );
+  });
+});
+
 app.listen(port, () => {
   console.log(`Serveur démarré sur le port ${port}`);
 });

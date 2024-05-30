@@ -505,7 +505,8 @@ footer p {
 
 .contact,
 .login,
-.register {
+.register,
+.account {
     padding: 0 200px;
     display: flex;
     flex-flow: column wrap;
@@ -514,9 +515,41 @@ footer p {
 
 .contact h1,
 .login h1,
-.register h1 {
+.register h1,
+.account h1 {
     font-size: 36px;
+    text-align: center;
+}
 
+.messages-page {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+
+}
+
+.passwordChange {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.account button {
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+.passwordChange button {
+    width: 100%;
+}
+
+.delete {
+    background: #c0392b
+}
+
+.delete:hover {
+    background: #e74c3c
 }
 
 .contact-form,
@@ -693,8 +726,13 @@ button:hover {
     .gallery,
     .contact,
     .login,
+    .account,
     .register {
         padding: 0 25px;
+    }
+
+    .account button {
+        width: 100%;
     }
 
     .contact-form,
@@ -738,5 +776,74 @@ button:hover {
 
     .gallery-item {
         min-height: 125px;
+    }
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+@media screen and (max-width: 600px) {
+
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+        display: block;
+    }
+
+    th {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 30%;
+    }
+
+    td:before {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        transform: translateY(-50%);
+        font-weight: bold;
+    }
+
+    td:nth-of-type(1):before {
+        content: "Nom";
+    }
+
+    td:nth-of-type(2):before {
+        content: "E-mail";
+    }
+
+    td:nth-of-type(3):before {
+        content: "Message";
     }
 }
