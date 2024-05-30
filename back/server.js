@@ -4,6 +4,10 @@ const port = 3001;
 const mysql = require("mysql");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+const { v4: uuidv4 } = require("uuid");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -21,6 +25,166 @@ connection.connect((err) => {
 });
 
 app.use(express.json());
+
+app.use("/images", express.static(path.join(__dirname, "images")));
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images/");
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const uniqueName = `${uuidv4()}${ext}`;
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({ storage: storage });
+app.post("/gallery", upload.single("file"), (req, res) => {
+  const { name, description } = req.body;
+  const file = req.file;
+
+  if (!name || !description || !file) {
+    return res.status(400).json({ error: "Tous les champs sont requis." });
+  }
+
+  if (!file.mimetype.startsWith("image/")) {
+    return res.status(400).json({ error: "Seules les images sont acceptées." });
+  }
+
+  const fileName = file.filename;
+
+  connection.query(
+    "INSERT INTO gallery (file_name, name, description, date) VALUES (?, ?, ?, NOW())",
+    [fileName, name, description],
+    (err, results) => {
+      if (err) {
+        res.status(500).json({
+          error: "Une erreur inattendue s'est produite.\nVeuillez réessayer.",
+        });
+      }
+      res.json({ message: "Photo ajoutée avec succès." });
+    }
+  );
+});
+
+app.put("/gallery/:id", upload.single("file"), (req, res) => {
+  const { id } = req.params;
+  const { name, description } = req.body;
+  const file = req.file;
+
+  if (!name || !description) {
+    return res.status(400).json({ error: "Tous les champs sont requis." });
+  }
+
+  connection.query(
+    "SELECT file_name FROM gallery WHERE id = ?",
+    [id],
+    (err, results) => {
+      if (err) {
+        res
+          .status(500)
+          .json({
+            error: "Erreur lors de la récupération de la photo actuelle.",
+          });
+        return;
+      }
+
+      if (results.length === 0) {
+        res.status(404).json({ error: "Photo non trouvée." });
+        return;
+      }
+
+      const currentFileName = results[0].file_name;
+
+      let updateQuery = "UPDATE gallery SET name = ?, description = ?";
+      let queryParams = [name, description];
+
+      if (file) {
+        const fileName = file.filename;
+        updateQuery += ", file_name = ?";
+        queryParams.push(fileName);
+      }
+
+      updateQuery += " WHERE id = ?";
+      queryParams.push(id);
+
+      connection.query(updateQuery, queryParams, (err, results) => {
+        if (err) {
+          res.status(500).json({
+            error: "Une erreur inattendue s'est produite.\nVeuillez réessayer.",
+          });
+          return;
+        }
+        if (results.affectedRows === 0) {
+          res.status(404).json({ error: "Photo non trouvée." });
+          return;
+        }
+
+        if (file && currentFileName) {
+          const oldFilePath = path.join(__dirname, "images", currentFileName);
+          fs.unlink(oldFilePath, (err) => {
+            if (err) {
+              console.error(
+                "Erreur lors de la suppression de l'ancienne image : ",
+                err
+              );
+            }
+          });
+        }
+
+        res.json({ message: "Photo modifiée avec succès." });
+      });
+    }
+  );
+});
+
+app.delete("/gallery/:id", (req, res) => {
+  const { id } = req.params;
+
+  connection.query(
+    "SELECT file_name FROM gallery WHERE id = ?",
+    [id],
+    (err, results) => {
+      if (err) {
+        res.status(500).json({
+          error: "Erreur lors de la récupération de la photo.",
+        });
+        return;
+      }
+
+      if (results.length === 0) {
+        res.status(404).json({ error: "Photo non trouvée." });
+        return;
+      }
+
+      const fileName = results[0].file_name;
+
+      connection.query(
+        "DELETE FROM gallery WHERE id = ?",
+        [id],
+        (err, results) => {
+          if (err) {
+            res.status(500).json({
+              error: "Erreur lors de la suppression de la photo.",
+            });
+            return;
+          }
+
+          const filePath = path.join(__dirname, "images", fileName);
+          fs.unlink(filePath, (err) => {
+            if (err) {
+              console.error("Erreur lors de la suppression du fichier :", err);
+            }
+          });
+
+          res.json({ message: "Photo supprimée avec succès." });
+        }
+      );
+    }
+  );
+});
+
 
 app.post("/register", (req, res) => {
   const { email, password } = req.body;

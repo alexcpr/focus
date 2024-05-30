@@ -12,6 +12,7 @@ module.exports = function (app) {
       "/contact",
       "/getmessages",
       "/changepassword",
+      "/images",
     ],
     createProxyMiddleware({
       target: "http://localhost:3001",

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 function CommentSection({ itemId }) {
   const [comments, setComments] = useState([]);
@@ -100,11 +100,10 @@ function CommentSection({ itemId }) {
   );
 }
 
-function Gallery() {
+function Gallery({ onSelectPhoto, isAdminPanel }) {
   const [galleryItems, setGalleryItems] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const navigate = useNavigate();
   const { id } = useParams();
 
   useEffect(() => {
@@ -158,53 +157,69 @@ function Gallery() {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  return (
-    <div className="gallery" id="gallery">
-      {galleryItems.length === 1 ? (
-        <>
-          <div className="item-container">
-            <div className="gallery-item" key={galleryItems[0].id}>
-              <img
-                src={`${window.location.origin}/images/${galleryItems[0].file_name}`}
-                onClick={() => openModal(galleryItems[0])}
-              />
-              <div className="vignette"></div>
-            </div>
-            <div className="gallery-item-description">
-              <h1>{galleryItems[0].name}</h1>
-              <small>
-                <em>{formatDate(galleryItems[0].date)}</em>
-              </small>
-              <p>{galleryItems[0].description}</p>
-            </div>
-          </div>
-          <CommentSection itemId={galleryItems[0].id} />
-        </>
-      ) : (
-        <div className="gallery-grid">
-          {galleryItems.map((item) => (
-            <div className="gallery-item" key={item.id}>
-              <img
-                src={`${window.location.origin}/images/${item.file_name}`}
-                onClick={() => navigate(`/gallery/${item.id}`)}
-              />
-              <div className="vignette"></div>
-            </div>
-          ))}
-        </div>
-      )}
-      {modalOpen && (
-        <div className="modal" onClick={closeModal}>
-          <div className="modal-content">
-            <img
-              src={`${window.location.origin}/images/${selectedImage.file_name}`}
-              alt={selectedImage.description}
-            />
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  const handleClick = (item) => {
+    if (isAdminPanel) {
+      onSelectPhoto(item);
+    } else {
+      window.location.href = `#/gallery/${item.id}`;
+    }
+  };
+
+  const handleClickSingle = (item) => {
+    if (isAdminPanel) {
+      onSelectPhoto(item);
+    } else {
+      openModal(item);
+    }
+  };
+
+ return (
+   <div className="gallery" id="gallery">
+     {galleryItems.length === 1 ? (
+       <>
+         <div className="item-container">
+           <div className="gallery-item" key={galleryItems[0].id}>
+             <img
+               src={`${window.location.origin}/images/${galleryItems[0].file_name}`}
+               onClick={() => handleClickSingle(galleryItems[0])}
+             />
+             <div className="vignette"></div>
+           </div>
+           <div className="gallery-item-description">
+             <h1>{galleryItems[0].name}</h1>
+             <small>
+               <em>{formatDate(galleryItems[0].date)}</em>
+             </small>
+             <p>{galleryItems[0].description}</p>
+           </div>
+         </div>
+         <CommentSection itemId={galleryItems[0].id} />
+       </>
+     ) : (
+       <div className="gallery-grid">
+         {galleryItems.map((item) => (
+           <div className="gallery-item" key={item.id}>
+             <img
+               src={`${window.location.origin}/images/${item.file_name}`}
+               onClick={() => handleClick(item)}
+             />
+             <div className="vignette"></div>
+           </div>
+         ))}
+       </div>
+     )}
+     {modalOpen && (
+       <div className="modal" onClick={closeModal}>
+         <div className="modal-content">
+           <img
+             src={`${window.location.origin}/images/${selectedImage.file_name}`}
+             alt={selectedImage.description}
+           />
+         </div>
+       </div>
+     )}
+   </div>
+ );
 }
 
 export default Gallery;

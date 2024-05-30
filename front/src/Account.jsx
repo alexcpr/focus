@@ -52,7 +52,11 @@ function Account() {
     }
   };
 
-  const changePassword = async (currentPassword, newPassword, confirmPassword) => {
+  const changePassword = async (
+    currentPassword,
+    newPassword,
+    confirmPassword
+  ) => {
     const token = localStorage.getItem("token");
     try {
       const response = await fetch("/changepassword", {
@@ -128,6 +132,7 @@ function Account() {
           changePassword={changePassword}
           setView={setView}
           toast={toast}
+          FormGroup={FormGroup}
         />
       )}
     </section>
@@ -139,7 +144,9 @@ function MessagesPage({ messages, setView }) {
     <>
       <h1>Messages envoyés</h1>
       <div className="messages-page">
-        <button onClick={() => setView("account")}>Retour</button>
+        <button className="backBtn" onClick={() => setView("account")}>
+          Retour
+        </button>
         {messages.length > 0 ? (
           <table>
             <thead>
@@ -167,7 +174,7 @@ function MessagesPage({ messages, setView }) {
   );
 }
 
-function ChangePasswordPage({ changePassword, setView, toast }) {
+function ChangePasswordPage({ changePassword, setView, toast, FormGroup }) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -186,39 +193,71 @@ function ChangePasswordPage({ changePassword, setView, toast }) {
           <div key={index}>{line}</div>
         ))}
       </div>
-      <button onClick={() => setView("account")}>Retour</button>
+      <button className="backBtn" onClick={() => setView("account")}>
+        Retour
+      </button>
       <form className="passwordChange" onSubmit={handleSubmit}>
-        <div>
-          <label>Mot de passe actuel</label>
-          <input
-            type="password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Nouveau mot de passe</label>
-          <input
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Confirmer le nouveau mot de passe</label>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
+        <FormGroup
+          label="Mot de passe actuel"
+          type="password"
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
+          required
+        />
+        <FormGroup
+          label="Nouveau mot de passe"
+          type="password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          required
+        />
+        <FormGroup
+          label="Confirmer le nouveau mot de passe"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+        />
         <button type="submit">Changer le mot de passe</button>
       </form>
     </>
   );
 }
+
+const FormGroup = ({
+  label,
+  id,
+  name,
+  type,
+  required,
+  value,
+  onChange,
+  rows,
+}) => {
+  return (
+    <div className="form-group">
+      <label htmlFor={id}>{label}</label>
+      {type === "textarea" ? (
+        <textarea
+          id={id}
+          name={name}
+          required={required}
+          rows={rows}
+          value={value}
+          onChange={onChange}
+        ></textarea>
+      ) : (
+        <input
+          type={type}
+          id={id}
+          name={name}
+          required={required}
+          value={value}
+          onChange={onChange}
+        />
+      )}
+    </div>
+  );
+};
 
 export default Account;

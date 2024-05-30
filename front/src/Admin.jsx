@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { isLoggedIn, isAdminLoggedIn, decodeToken } from "./utils/auth";
+import { isLoggedIn, isAdminLoggedIn } from "./utils/auth";
+import AdminPanel from "./AdminPanel";
 
 function Admin() {
   const [password, setPassword] = useState("");
@@ -75,7 +76,7 @@ function Admin() {
   }, [toast]);
 
   if (isAdmin === null) {
-    return <div>Chargement...</div>;
+    return;
   }
 
   if (!isAdmin) {
@@ -104,7 +105,7 @@ function Admin() {
     );
   }
 
-  return <AdminPanel />;
+  return <AdminPanel setToast={setToast} toast={toast} />;
 }
 
 const FormGroup = ({
@@ -141,10 +142,6 @@ const FormGroup = ({
       )}
     </div>
   );
-};
-
-const AdminPanel = () => {
-  return <div>Bienvenue sur le panel admin.</div>;
 };
 
 export default Admin;
