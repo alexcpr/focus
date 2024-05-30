@@ -133,49 +133,60 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/loginadmin", (req, res) => {
-  const { email, password } = req.body;
+  const token = req.headers.authorization.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ error: "Token non fourni" });
+  }
 
-  connection.query(
-    "SELECT * FROM users WHERE email = ?",
-    [email],
-    (err, results) => {
-      if (err) {
-        res.status(500).json({
-          error: "Une erreur inattendue s'est produite.\nVeuillez réessayer.",
-        });
-        return;
-      }
-
-      if (results.length === 0) {
-        res.status(401).json({
-          error: "E-mail ou mot de passe incorrect.\nVeuillez réessayer.",
-        });
-        return;
-      }
-
-      const user = results[0];
-      bcrypt.compare(
-        password,
-        user.LSPF5cc3NPHgOQbtIzCjPyQxC4LyCFrM,
-        (err, result) => {
-          if (err || !result) {
-            res.status(401).json({
-              error: "E-mail ou mot de passe incorrect.\nVeuillez réessayer.",
-            });
-            return;
-          }
-
-          let tokenPayload = { userId: user.id, email: user.email };
-
-          const token = jwt.sign(tokenPayload, "E5vJNoXOAvNDVbel", {
-            expiresIn: "1h",
-          });
-
-          res.json({ token });
-        }
-      );
+  jwt.verify(token, "bKP4SsVq8keD0o4J", (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Token invalide" });
     }
-  );
+    const email = decoded.email;
+    const { password } = req.body;
+
+    connection.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email],
+      (err, results) => {
+        if (err) {
+          res.status(500).json({
+            error: "Une erreur inattendue s'est produite.\nVeuillez réessayer.",
+          });
+          return;
+        }
+
+        if (results.length === 0) {
+          res.status(401).json({
+            error: "Mot de passe incorrect.\nVeuillez réessayer.",
+          });
+          return;
+        }
+
+        const user = results[0];
+        bcrypt.compare(
+          password,
+          user.LSPF5cc3NPHgOQbtIzCjPyQxC4LyCFrM,
+          (err, result) => {
+            if (err || !result) {
+              res.status(401).json({
+                error: "Mot de passe incorrect.\nVeuillez réessayer.",
+              });
+              return;
+            }
+
+            let tokenPayload = { userId: user.id, email: user.email };
+
+            const token = jwt.sign(tokenPayload, "E5vJNoXOAvNDVbel", {
+              expiresIn: "1h",
+            });
+
+            res.json({ token });
+          }
+        );
+      }
+    );
+  });
 });
 
 app.post("/verify", (req, res) => {

@@ -27,14 +27,14 @@ function Admin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const user = await decodeToken(localStorage.getItem("token"));
-      const email = user.email;
+      const token = localStorage.getItem("token");
       const response = await fetch("/loginadmin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ password }),
       });
       if (response.ok) {
         const { token } = await response.json();
