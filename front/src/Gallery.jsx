@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { decodeToken } from "./utils/auth";
+import { decodeToken, isAdminLoggedIn } from "./utils/auth";
 
 function CommentSection({ itemId }) {
   const [comments, setComments] = useState([]);
@@ -229,6 +229,7 @@ function Gallery({ onSelectPhoto, isAdminPanel }) {
   const [galleryItems, setGalleryItems] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
@@ -259,6 +260,9 @@ function Gallery({ onSelectPhoto, isAdminPanel }) {
     };
 
     fetchGalleryData();
+    isAdminLoggedIn().then((isAdmin) => {
+      setIsAdmin(isAdmin);
+    });
   }, [id]);
 
   const openModal = (image) => {
@@ -307,6 +311,14 @@ function Gallery({ onSelectPhoto, isAdminPanel }) {
     }
   };
 
+  const handleEditPhoto = () => {
+    window.location.href = "#/admin/";
+  };
+  
+  const handleDeletePhoto = () => {
+    window.location.href = "#/admin/";
+  };
+
   return (
     <div className="gallery" id="gallery">
       {galleryItems.length === 1 ? (
@@ -325,6 +337,17 @@ function Gallery({ onSelectPhoto, isAdminPanel }) {
                 <em>{formatDate(galleryItems[0].date)}</em>
               </small>
               <p>{galleryItems[0].description}</p>
+              <div
+                className="admin-options"
+                style={{ display: isAdmin ? "flex" : "none" }}
+              >
+                <button onClick={() => handleEditPhoto()}>
+                  Modifier la photo
+                </button>
+                <button onClick={() => handleDeletePhoto()} className="delete">
+                  Supprimer la photo
+                </button>
+              </div>
             </div>
           </div>
           <CommentSection itemId={galleryItems[0].id} />
