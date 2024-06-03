@@ -38,20 +38,20 @@ function FooterContent() {
   return (
     <div className="footer-container">
       <div className="grid-item">
-        <p>C'est du lard.</p>
+        {/* <p>C'est du lard.</p> */}
         <DonateButton />
       </div>
       <div className="grid-item">
         <span>LEGAL</span>
-        <a href="/privacy">Privacy</a>
-        <a href="/terms">Terms</a>
-        <a href="/cookies">Cookies</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
       </div>
       <div className="grid-item">
         <span>Contact</span>
-        <a href="/contact">E-mail</a>
-        <a href="/instagram">Instagram</a>
-        <a href="/GitHub">GitHub</a>
+        <a href="/#/contact">E-mail</a>
+        <a href="https://instagram.com/aleksshrv.art">Instagram</a>
+        <a href="https://github.com/alexcpr/focus">GitHub</a>
       </div>
     </div>
   );
