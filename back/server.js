@@ -467,21 +467,59 @@ app.get("/gallery/:id/comments", (req, res) => {
 });
 
 app.post("/gallery/:id/comments", (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
   const { id } = req.params;
   const { text } = req.body;
 
-  connection.query(
-    "INSERT INTO comments (image_id, text) VALUES (?, ?)",
-    [id, text],
-    (err, results) => {
+  if (!id) {
+    return res.status(400).json({ error: "ID de l'image non fourni." });
+  }
+
+  if (!text) {
+    return res.status(400).json({ error: "Veuillez remplir tous les champs." });
+  }
+
+  if (text.length < 2) {
+    return res.status(400).json({
+      error: "Le commentaire doit contenir au moins 2 caractères.",
+    });
+  }
+
+  if (token) {
+    jwt.verify(token, "bKP4SsVq8keD0o4J", (err, decoded) => {
       if (err) {
-        console.error("Erreur lors de la requête SQL : ", err);
-        res.status(500).json({ error: "Erreur interne du serveur" });
-        return;
+        return res.status(401).json({ error: "Token invalide" });
       }
-      res.json({ message: "Commentaire ajoutée avec succès" });
-    }
-  );
+
+      const userId = decoded.userId;
+
+      connection.query(
+        "INSERT INTO comments (userId, image_id, text) VALUES (?, ?, ?)",
+        [userId, id, text],
+        (err, results) => {
+          if (err) {
+            console.error("Erreur lors de la requête SQL : ", err);
+            res.status(500).json({ error: "Erreur interne du serveur" });
+            return;
+          }
+          res.json({ message: "Commentaire ajoutée avec succès" });
+        }
+      );
+    });
+  } else {
+    connection.query(
+      "INSERT INTO comments (image_id, text) VALUES (?, ?)",
+      [id, text],
+      (err, results) => {
+        if (err) {
+          console.error("Erreur lors de la requête SQL : ", err);
+          res.status(500).json({ error: "Erreur interne du serveur" });
+          return;
+        }
+        res.json({ message: "Commentaire ajoutée avec succès" });
+      }
+    );
+  }
 });
 
 // app.delete("/gallery/comments/:commentId", (req, res) => {

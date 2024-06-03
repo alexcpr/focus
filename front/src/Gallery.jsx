@@ -3,6 +3,11 @@ import { useParams } from "react-router-dom";
 
 function CommentSection({ itemId }) {
   const [comments, setComments] = useState([]);
+  const [toast, setToast] = useState({
+    show: false,
+    type: "",
+    message: "",
+  });
 
   const fetchComments = async () => {
     try {
@@ -23,6 +28,16 @@ function CommentSection({ itemId }) {
   useEffect(() => {
     fetchComments();
   }, [itemId]);
+
+  useEffect(() => {
+    if (toast.show) {
+      const timer = setTimeout(() => {
+        setToast({ ...toast, show: false });
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
   const formatRelativeTime = (dateString) => {
     const date = new Date(dateString);
@@ -47,56 +62,84 @@ function CommentSection({ itemId }) {
 
   const handleSubmitComment = async (commentText) => {
     try {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      const token = localStorage.getItem("token");
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
       const response = await fetch(`/gallery/${itemId}/comments`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: headers,
         body: JSON.stringify({ text: commentText }),
       });
-      if (!response.ok) {
-        throw new Error("Erreur lors de la soumission du commentaire");
+      if (response.ok) {
+        setToast({
+          show: true,
+          type: "success",
+          message: "Votre commentaire à bien été enregistré.",
+        });
+        fetchComments();
+      } else {
+        const message = await response.json();
+        setToast({
+          show: true,
+          type: "danger",
+          message: message.error,
+        });
       }
-      fetchComments();
     } catch (error) {
-      console.error("Erreur lors de la soumission du commentaire : ", error);
+      setToast({
+        show: true,
+        type: "danger",
+        message: "Une erreur s'est produite : " + error.message,
+      });
     }
   };
 
   return (
-    <div className="comment-section">
-      <h2>
-        {comments.length} Commentaire{comments.length !== 0 ? "s" : ""}
-      </h2>
-      <div className="comments">
-        {comments.map((comment, index) => (
-          <React.Fragment key={comment.id}>
-            <div className="comment">
-              <span>{comment.text}</span>
-              <small>{formatRelativeTime(comment.created_at)}</small>
-            </div>
-            {index !== comments.length - 1 && <hr />}
-          </React.Fragment>
+    <>
+      <div id="toast" className={`${toast.show ? "show" : ""} ${toast.type}`}>
+        <strong>{toast.type === "danger" ? "Erreur: " : "Succès: "}</strong>
+        {toast.message.split("\n").map((line, index) => (
+          <div key={index}>{line}</div>
         ))}
       </div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const commentText = e.target.comment.value;
-          if (commentText.trim() !== "") {
+      <div className="comment-section">
+        <h2>
+          {comments.length} Commentaire{comments.length !== 0 ? "s" : ""}
+        </h2>
+        <div className="comments">
+          {comments.map((comment, index) => (
+            <React.Fragment key={comment.id}>
+              <div className="comment">
+                <span>{comment.text}</span>
+                <small>{formatRelativeTime(comment.created_at)}</small>
+              </div>
+              {index !== comments.length - 1 && <hr />}
+            </React.Fragment>
+          ))}
+        </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const commentText = e.target.comment.value;
             handleSubmitComment(commentText);
             e.target.comment.value = "";
-          }
-        }}
-      >
-        <textarea
-          name="comment"
-          rows="4"
-          placeholder="Ajouter un commentaire..."
-        ></textarea>
-        <button type="submit">Poster</button>
-      </form>
-    </div>
+          }}
+        >
+          <textarea
+            name="comment"
+            rows="4"
+            placeholder="Ajouter un commentaire..."
+            required
+          ></textarea>
+          <button type="submit">Poster</button>
+        </form>
+      </div>
+    </>
   );
 }
 
@@ -173,53 +216,53 @@ function Gallery({ onSelectPhoto, isAdminPanel }) {
     }
   };
 
- return (
-   <div className="gallery" id="gallery">
-     {galleryItems.length === 1 ? (
-       <>
-         <div className="item-container">
-           <div className="gallery-item" key={galleryItems[0].id}>
-             <img
-               src={`${window.location.origin}/images/${galleryItems[0].file_name}`}
-               onClick={() => handleClickSingle(galleryItems[0])}
-             />
-             <div className="vignette"></div>
-           </div>
-           <div className="gallery-item-description">
-             <h1>{galleryItems[0].name}</h1>
-             <small>
-               <em>{formatDate(galleryItems[0].date)}</em>
-             </small>
-             <p>{galleryItems[0].description}</p>
-           </div>
-         </div>
-         <CommentSection itemId={galleryItems[0].id} />
-       </>
-     ) : (
-       <div className="gallery-grid">
-         {galleryItems.map((item) => (
-           <div className="gallery-item" key={item.id}>
-             <img
-               src={`${window.location.origin}/images/${item.file_name}`}
-               onClick={() => handleClick(item)}
-             />
-             <div className="vignette"></div>
-           </div>
-         ))}
-       </div>
-     )}
-     {modalOpen && (
-       <div className="modal" onClick={closeModal}>
-         <div className="modal-content">
-           <img
-             src={`${window.location.origin}/images/${selectedImage.file_name}`}
-             alt={selectedImage.description}
-           />
-         </div>
-       </div>
-     )}
-   </div>
- );
+  return (
+    <div className="gallery" id="gallery">
+      {galleryItems.length === 1 ? (
+        <>
+          <div className="item-container">
+            <div className="gallery-item" key={galleryItems[0].id}>
+              <img
+                src={`${window.location.origin}/images/${galleryItems[0].file_name}`}
+                onClick={() => handleClickSingle(galleryItems[0])}
+              />
+              <div className="vignette"></div>
+            </div>
+            <div className="gallery-item-description">
+              <h1>{galleryItems[0].name}</h1>
+              <small>
+                <em>{formatDate(galleryItems[0].date)}</em>
+              </small>
+              <p>{galleryItems[0].description}</p>
+            </div>
+          </div>
+          <CommentSection itemId={galleryItems[0].id} />
+        </>
+      ) : (
+        <div className="gallery-grid">
+          {galleryItems.map((item) => (
+            <div className="gallery-item" key={item.id}>
+              <img
+                src={`${window.location.origin}/images/${item.file_name}`}
+                onClick={() => handleClick(item)}
+              />
+              <div className="vignette"></div>
+            </div>
+          ))}
+        </div>
+      )}
+      {modalOpen && (
+        <div className="modal" onClick={closeModal}>
+          <div className="modal-content">
+            <img
+              src={`${window.location.origin}/images/${selectedImage.file_name}`}
+              alt={selectedImage.description}
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default Gallery;
