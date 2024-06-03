@@ -104,7 +104,10 @@ function AdminPanel({ toast, setToast }) {
           <h1>Modifier une photo</h1>
           <button
             className="backBtn"
-            onClick={() => setView("galleryManagement")}
+            onClick={() => {
+              setSelectedPhoto(null);
+              setView("galleryManagement");
+            }}
           >
             Retour
           </button>
@@ -131,7 +134,10 @@ function AdminPanel({ toast, setToast }) {
           <h1>Supprimer une photo</h1>
           <button
             className="backBtn"
-            onClick={() => setView("galleryManagement")}
+            onClick={() => {
+              setSelectedPhoto(null);
+              setView("galleryManagement");
+            }}
           >
             Retour
           </button>
