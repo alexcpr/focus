@@ -17,11 +17,18 @@ function Contact() {
     event.preventDefault();
 
     try {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      const token = localStorage.getItem("token");
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
       const response = await fetch("/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: headers,
         body: JSON.stringify(formData),
       });
 
@@ -37,10 +44,11 @@ function Contact() {
           message: "",
         });
       } else {
+        const message = await response.json();
         setToast({
           show: true,
           type: "danger",
-          message: "Erreur lors de l'envoie du message",
+          message: message.error,
         });
       }
     } catch (error) {
