@@ -537,11 +537,17 @@ footer p {
     text-align: center;
 }
 
-.messages-page {
+.messages-page,
+.comments-page {
     display: flex;
     flex-flow: column wrap;
     justify-content: center;
     align-items: center;
+}
+
+.comments-page .delete,
+.messages-page .delete {
+    width: 100%;
 }
 
 .passwordChange,

@@ -11,6 +11,8 @@ module.exports = function (app) {
       "/gallery",
       "/contact",
       "/getmessages",
+      "/getcomments",
+      "/deletemessage",
       "/changepassword",
       "/images",
     ],

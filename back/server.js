@@ -522,22 +522,61 @@ app.post("/gallery/:id/comments", (req, res) => {
   }
 });
 
-// app.delete("/gallery/comments/:commentId", (req, res) => {
-//   const { commentId } = req.params;
+app.delete("/gallery/comments/:commentId", (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
 
-//   connection.query(
-//     "DELETE FROM comments WHERE id = ?",
-//     [commentId],
-//     (err, results) => {
-//       if (err) {
-//         console.error("Erreur lors de la requête SQL : ", err);
-//         res.status(500).json({ error: "Erreur interne du serveur" });
-//         return;
-//       }
-//       res.json({ message: "Commentaire supprimée avec succès" });
-//     }
-//   );
-// });
+  if (token) {
+    jwt.verify(token, "bKP4SsVq8keD0o4J", (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ error: "Token invalide" });
+      }
+
+      const userId = decoded.userId;
+      const { commentId } = req.params;
+
+      connection.query(
+        "DELETE FROM comments WHERE id = ? AND userId = ?",
+        [commentId, userId],
+        (err, results) => {
+          if (err) {
+            console.error("Erreur lors de la requête SQL : ", err);
+            res.status(500).json({ error: "Erreur interne du serveur" });
+            return;
+          }
+          res.json({ message: "Commentaire supprimée avec succès" });
+        }
+      );
+    });
+  }
+});
+
+app.delete("/deletemessage/:messageId", (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (token) {
+    jwt.verify(token, "bKP4SsVq8keD0o4J", (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ error: "Token invalide" });
+      }
+
+      const userId = decoded.userId;
+      const { messageId } = req.params;
+
+      connection.query(
+        "DELETE FROM contact WHERE id = ? AND userId = ?",
+        [messageId, userId],
+        (err, results) => {
+          if (err) {
+            console.error("Erreur lors de la requête SQL : ", err);
+            res.status(500).json({ error: "Erreur interne du serveur" });
+            return;
+          }
+          res.json({ message: "Message supprimée avec succès" });
+        }
+      );
+    });
+  }
+});
 
 app.post("/contact", (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
@@ -599,6 +638,35 @@ app.get("/getmessages", (req, res) => {
 
     connection.query(
       "SELECT * FROM contact WHERE userId = ?",
+      [id],
+      (err, results) => {
+        if (err) {
+          res.status(500).json({
+            error: "Une erreur inattendue s'est produite.\nVeuillez réessayer.",
+          });
+          return;
+        }
+        res.json(results);
+      }
+    );
+  });
+});
+
+app.get("/getcomments", (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ error: "Token non fourni" });
+  }
+
+  jwt.verify(token, "bKP4SsVq8keD0o4J", (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Token invalide" });
+    }
+
+    const id = decoded.userId;
+
+    connection.query(
+      "SELECT * FROM comments WHERE userId = ?",
       [id],
       (err, results) => {
         if (err) {
