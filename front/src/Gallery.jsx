@@ -203,14 +203,23 @@ function Gallery({ onSelectPhoto, isAdminPanel }) {
   const handleClick = (item) => {
     if (isAdminPanel) {
       onSelectPhoto(item);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 100);
     } else {
       window.location.href = `#/gallery/${item.id}`;
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 100);
     }
   };
 
   const handleClickSingle = (item) => {
     if (isAdminPanel) {
       onSelectPhoto(item);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 100);
     } else {
       openModal(item);
     }
