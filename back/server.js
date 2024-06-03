@@ -453,7 +453,7 @@ app.get("/gallery/:id", (req, res) => {
 app.get("/gallery/:id/comments", (req, res) => {
   const { id } = req.params;
   connection.query(
-    "SELECT * FROM comments WHERE image_id = ?",
+    "SELECT * FROM comments WHERE image_id = ? ORDER BY created_at",
     [id],
     (err, results) => {
       if (err) {

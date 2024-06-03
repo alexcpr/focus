@@ -44,21 +44,42 @@ function CommentSection({ itemId }) {
     const now = new Date();
     const diffInMs = now - date;
 
-    const minutes = Math.floor(diffInMs / (1000 * 60));
-    if (minutes < 1) {
+    const seconds = Math.floor(diffInMs / 1000);
+    if (seconds === 0) {
       return "À l'instant";
-    } else if (minutes < 60) {
-      return `Il y a ${minutes} minute${minutes !== 1 ? "s" : ""}`;
+    }
+    if (seconds < 60) {
+      return `Il y a ${seconds} seconde${seconds !== 1 ? "s" : ""}`;
+    }
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    if (minutes < 60) {
+      if (remainingSeconds === 0) {
+        return `Il y a ${minutes} minute${minutes !== 1 ? "s" : ""}`;
+      } else {
+        return `Il y a ${minutes} minute${
+          minutes !== 1 ? "s" : ""
+        } et ${remainingSeconds} seconde${remainingSeconds !== 1 ? "s" : ""}`;
+      }
     }
 
     const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
     if (hours < 24) {
-      return `Il y a ${hours} heure${hours !== 1 ? "s" : ""}`;
+      if (remainingMinutes === 0) {
+        return `Il y a ${hours} heure${hours !== 1 ? "s" : ""}`;
+      } else {
+        return `Il y a ${hours} heure${
+          hours !== 1 ? "s" : ""
+        } et ${remainingMinutes} minute${remainingMinutes !== 1 ? "s" : ""}`;
+      }
     }
 
     const days = Math.floor(hours / 24);
     return `Il y a ${days} jour${days !== 1 ? "s" : ""}`;
   };
+
 
   const handleSubmitComment = async (commentText) => {
     try {
