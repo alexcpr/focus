@@ -20,6 +20,9 @@ function AdminPanel({ toast, setToast }) {
     try {
       const response = await fetch(`/gallery/${selectedPhoto.id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("tokenadmin")}`,
+        },
       });
       const result = await response.json();
 
@@ -179,6 +182,9 @@ function AddPhotoPage({ setView, toast, setToast }) {
     try {
       const response = await fetch("/gallery", {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("tokenadmin")}`,
+        },
         body: formData,
       });
       const result = await response.json();
@@ -267,6 +273,9 @@ function EditPhotoPage({ setView, toast, setToast, photo, setSelectedPhoto }) {
     try {
       const response = await fetch(`/gallery/${id}`, {
         method: "PUT",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("tokenadmin")}`,
+        },
         body: formData,
       });
       const result = await response.json();

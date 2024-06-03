@@ -41,150 +41,186 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 app.post("/gallery", upload.single("file"), (req, res) => {
-  const { name, description } = req.body;
-  const file = req.file;
-
-  if (!name || !description || !file) {
-    return res.status(400).json({ error: "Tous les champs sont requis." });
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ error: "Token non fourni" });
   }
 
-  if (!file.mimetype.startsWith("image/")) {
-    return res.status(400).json({ error: "Seules les images sont acceptées." });
-  }
-
-  const fileName = file.filename;
-
-  connection.query(
-    "INSERT INTO gallery (file_name, name, description, date) VALUES (?, ?, ?, NOW())",
-    [fileName, name, description],
-    (err, results) => {
-      if (err) {
-        res.status(500).json({
-          error: "Une erreur inattendue s'est produite.\nVeuillez réessayer.",
-        });
-      }
-      res.json({ message: "Photo ajoutée avec succès." });
+  jwt.verify(token, "E5vJNoXOAvNDVbel", (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Token invalide" });
     }
-  );
-});
 
-app.put("/gallery/:id", upload.single("file"), (req, res) => {
-  const { id } = req.params;
-  const { name, description } = req.body;
-  const file = req.file;
+    const { name, description } = req.body;
+    const file = req.file;
 
-  if (!name || !description) {
-    return res.status(400).json({ error: "Tous les champs sont requis." });
-  }
+    if (!name || !description || !file) {
+      return res.status(400).json({ error: "Tous les champs sont requis." });
+    }
 
-  connection.query(
-    "SELECT file_name FROM gallery WHERE id = ?",
-    [id],
-    (err, results) => {
-      if (err) {
-        res
-          .status(500)
-          .json({
-            error: "Erreur lors de la récupération de la photo actuelle.",
-          });
-        return;
-      }
+    if (!file.mimetype.startsWith("image/")) {
+      return res
+        .status(400)
+        .json({ error: "Seules les images sont acceptées." });
+    }
 
-      if (results.length === 0) {
-        res.status(404).json({ error: "Photo non trouvée." });
-        return;
-      }
+    const fileName = file.filename;
 
-      const currentFileName = results[0].file_name;
-
-      let updateQuery = "UPDATE gallery SET name = ?, description = ?";
-      let queryParams = [name, description];
-
-      if (file) {
-        const fileName = file.filename;
-        updateQuery += ", file_name = ?";
-        queryParams.push(fileName);
-      }
-
-      updateQuery += " WHERE id = ?";
-      queryParams.push(id);
-
-      connection.query(updateQuery, queryParams, (err, results) => {
+    connection.query(
+      "INSERT INTO gallery (file_name, name, description, date) VALUES (?, ?, ?, NOW())",
+      [fileName, name, description],
+      (err, results) => {
         if (err) {
           res.status(500).json({
             error: "Une erreur inattendue s'est produite.\nVeuillez réessayer.",
           });
+        }
+        res.json({ message: "Photo ajoutée avec succès." });
+      }
+    );
+  });
+});
+
+app.put("/gallery/:id", upload.single("file"), (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ error: "Token non fourni" });
+  }
+
+  jwt.verify(token, "E5vJNoXOAvNDVbel", (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Token invalide" });
+    }
+
+    const { id } = req.params;
+    const { name, description } = req.body;
+    const file = req.file;
+
+    if (!name || !description) {
+      return res.status(400).json({ error: "Tous les champs sont requis." });
+    }
+
+    connection.query(
+      "SELECT file_name FROM gallery WHERE id = ?",
+      [id],
+      (err, results) => {
+        if (err) {
+          res.status(500).json({
+            error: "Erreur lors de la récupération de la photo actuelle.",
+          });
           return;
         }
-        if (results.affectedRows === 0) {
+
+        if (results.length === 0) {
           res.status(404).json({ error: "Photo non trouvée." });
           return;
         }
 
-        if (file && currentFileName) {
-          const oldFilePath = path.join(__dirname, "images", currentFileName);
-          fs.unlink(oldFilePath, (err) => {
-            if (err) {
-              console.error(
-                "Erreur lors de la suppression de l'ancienne image : ",
-                err
-              );
-            }
-          });
+        const currentFileName = results[0].file_name;
+
+        let updateQuery = "UPDATE gallery SET name = ?, description = ?";
+        let queryParams = [name, description];
+
+        if (file) {
+          const fileName = file.filename;
+          updateQuery += ", file_name = ?";
+          queryParams.push(fileName);
         }
 
-        res.json({ message: "Photo modifiée avec succès." });
-      });
-    }
-  );
-});
+        updateQuery += " WHERE id = ?";
+        queryParams.push(id);
 
-app.delete("/gallery/:id", (req, res) => {
-  const { id } = req.params;
-
-  connection.query(
-    "SELECT file_name FROM gallery WHERE id = ?",
-    [id],
-    (err, results) => {
-      if (err) {
-        res.status(500).json({
-          error: "Erreur lors de la récupération de la photo.",
-        });
-        return;
-      }
-
-      if (results.length === 0) {
-        res.status(404).json({ error: "Photo non trouvée." });
-        return;
-      }
-
-      const fileName = results[0].file_name;
-
-      connection.query(
-        "DELETE FROM gallery WHERE id = ?",
-        [id],
-        (err, results) => {
+        connection.query(updateQuery, queryParams, (err, results) => {
           if (err) {
             res.status(500).json({
-              error: "Erreur lors de la suppression de la photo.",
+              error:
+                "Une erreur inattendue s'est produite.\nVeuillez réessayer.",
             });
             return;
           }
+          if (results.affectedRows === 0) {
+            res.status(404).json({ error: "Photo non trouvée." });
+            return;
+          }
 
-          const filePath = path.join(__dirname, "images", fileName);
-          fs.unlink(filePath, (err) => {
-            if (err) {
-              console.error("Erreur lors de la suppression du fichier :", err);
-            }
-          });
+          if (file && currentFileName) {
+            const oldFilePath = path.join(__dirname, "images", currentFileName);
+            fs.unlink(oldFilePath, (err) => {
+              if (err) {
+                console.error(
+                  "Erreur lors de la suppression de l'ancienne image : ",
+                  err
+                );
+              }
+            });
+          }
 
-          res.json({ message: "Photo supprimée avec succès." });
-        }
-      );
-    }
-  );
+          res.json({ message: "Photo modifiée avec succès." });
+        });
+      }
+    );
+  });
 });
 
+app.delete("/gallery/:id", (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ error: "Token non fourni" });
+  }
+
+  jwt.verify(token, "E5vJNoXOAvNDVbel", (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Token invalide" });
+    }
+
+    const { id } = req.params;
+
+    connection.query(
+      "SELECT file_name FROM gallery WHERE id = ?",
+      [id],
+      (err, results) => {
+        if (err) {
+          res.status(500).json({
+            error: "Erreur lors de la récupération de la photo.",
+          });
+          return;
+        }
+
+        if (results.length === 0) {
+          res.status(404).json({ error: "Photo non trouvée." });
+          return;
+        }
+
+        const fileName = results[0].file_name;
+
+        connection.query(
+          "DELETE FROM gallery WHERE id = ?",
+          [id],
+          (err, results) => {
+            if (err) {
+              res.status(500).json({
+                error: "Erreur lors de la suppression de la photo.",
+              });
+              return;
+            }
+
+            const filePath = path.join(__dirname, "images", fileName);
+            fs.unlink(filePath, (err) => {
+              if (err) {
+                console.error(
+                  "Erreur lors de la suppression du fichier :",
+                  err
+                );
+              }
+            });
+
+            res.json({ message: "Photo supprimée avec succès." });
+          }
+        );
+      }
+    );
+  });
+});
 
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
@@ -297,7 +333,7 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/loginadmin", (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
+  const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
     return res.status(401).json({ error: "Token non fourni" });
   }
@@ -483,7 +519,7 @@ app.post("/contact", (req, res) => {
 });
 
 app.get("/getmessages", (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
+  const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
     return res.status(401).json({ error: "Token non fourni" });
   }
@@ -512,12 +548,7 @@ app.get("/getmessages", (req, res) => {
 });
 
 app.post("/changepassword", (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
-  const { currentPassword, newPassword, confirmPassword } = req.body;
-
-  if (!currentPassword || !newPassword || !confirmPassword) {
-    return res.status(400).json({ error: "Veuillez remplir tous les champs." });
-  }
+  const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
     return res.status(401).json({ error: "Token non fourni" });
@@ -528,6 +559,13 @@ app.post("/changepassword", (req, res) => {
       return res.status(401).json({ error: "Token invalide" });
     }
 
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return res
+        .status(400)
+        .json({ error: "Veuillez remplir tous les champs." });
+    }
     const userId = decoded.userId;
 
     connection.query(
