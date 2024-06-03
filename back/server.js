@@ -420,7 +420,7 @@ app.post("/verifyadmin", (req, res) => {
 });
 
 app.get("/gallery", (req, res) => {
-  connection.query("SELECT * FROM gallery", (err, results) => {
+  connection.query("SELECT * FROM gallery ORDER BY created_at DESC", (err, results) => {
     if (err) {
       console.error("Erreur lors de la requête SQL : ", err);
       res.status(500).json({ error: "Erreur interne du serveur" });
