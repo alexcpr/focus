@@ -550,6 +550,12 @@ footer p {
     width: 100%;
 }
 
+.comment .delete {
+    padding: 5px;
+    border-radius: 50%;
+    margin-left: 2.5px;
+}
+
 .passwordChange,
 .addPhoto,
 .editPhoto {

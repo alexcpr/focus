@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { decodeToken } from "./utils/auth";
 
 function CommentSection({ itemId }) {
   const [comments, setComments] = useState([]);
+  const [decodedUserId, setDecodedUserId] = useState(null);
   const [toast, setToast] = useState({
     show: false,
     type: "",
@@ -38,6 +40,19 @@ function CommentSection({ itemId }) {
       return () => clearTimeout(timer);
     }
   }, [toast]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      decodeToken(token)
+        .then((decoded) => {
+          setDecodedUserId(decoded.userId);
+        })
+        .catch((error) => {
+          console.error("Erreur lors du décodage du token : ", error);
+        });
+    }
+  }, []);
 
   const formatRelativeTime = (dateString) => {
     const date = new Date(dateString);
@@ -80,7 +95,6 @@ function CommentSection({ itemId }) {
     return `Il y a ${days} jour${days !== 1 ? "s" : ""}`;
   };
 
-
   const handleSubmitComment = async (commentText) => {
     try {
       const headers = {
@@ -120,6 +134,42 @@ function CommentSection({ itemId }) {
     }
   };
 
+  const deleteComment = async (commentId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      const response = await fetch(`/gallery/comments/${commentId}`, {
+        method: "DELETE",
+        headers: headers,
+      });
+
+      if (response.ok) {
+        setToast({
+          show: true,
+          type: "success",
+          message: "Le commentaire a été supprimé avec succès.",
+        });
+        fetchComments();
+      } else {
+        const message = await response.json();
+        setToast({
+          show: true,
+          type: "danger",
+          message: message.error,
+        });
+      }
+    } catch (error) {
+      setToast({
+        show: true,
+        type: "danger",
+        message: `Erreur lors de la suppression du commentaire : ${error}`,
+      });
+    }
+  };
+
   return (
     <>
       <div id="toast" className={`${toast.show ? "show" : ""} ${toast.type}`}>
@@ -137,7 +187,18 @@ function CommentSection({ itemId }) {
             <React.Fragment key={comment.id}>
               <div className="comment">
                 <span>{comment.text}</span>
-                <small>{formatRelativeTime(comment.created_at)}</small>
+                <small>
+                  {formatRelativeTime(comment.created_at)}{" "}
+                  {decodedUserId === comment.userId &&
+                  comment.userId !== null ? (
+                    <a
+                      className="delete"
+                      onClick={() => deleteComment(comment.id)}
+                    >
+                      🗑️
+                    </a>
+                  ) : null}
+                </small>
               </div>
               {index !== comments.length - 1 && <hr />}
             </React.Fragment>
