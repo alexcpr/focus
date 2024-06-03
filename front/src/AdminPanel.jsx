@@ -292,6 +292,7 @@ function EditPhotoPage({ setView, toast, setToast, photo, setSelectedPhoto }) {
           type: "success",
           message: "Photo modifiée avec succès.",
         });
+        setSelectedPhoto(null);
         setView("galleryManagement");
       } else {
         setToast({
