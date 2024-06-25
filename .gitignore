@@ -11,6 +11,8 @@
 
 # production
 /front/build
+/back/.env
+/back/images/
 
 # misc
 .DS_Store

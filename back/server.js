@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+require("dotenv").config();
 const port = 3001;
 const mysql = require("mysql");
 const jwt = require("jsonwebtoken");
@@ -10,10 +11,10 @@ const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 
 const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "focus",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 connection.connect((err) => {
@@ -25,6 +26,10 @@ connection.connect((err) => {
 });
 
 app.use(express.json());
+const environment = process.env.NODE_ENV || "development";
+if (environment === "production") {
+  app.use(express.static(path.join(__dirname, "build")));
+}
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
