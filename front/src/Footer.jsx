@@ -1,9 +1,36 @@
 /* global PayPal */
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "./assets/img/logo.png";
 
 function Footer() {
+const [theme, setTheme] = useState(
+  document.documentElement.getAttribute("data-theme") || "light"
+);
+  
+  useEffect(() => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (
+          mutation.type === "attributes" &&
+          mutation.attributeName === "data-theme"
+        ) {
+          setTheme(document.documentElement.getAttribute("data-theme"));
+        }
+      });
+    });
+
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme === "dark") {
+      setTheme("dark");
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+
+    observer.observe(document.documentElement, { attributes: true });
+
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     PayPal.Donation.Button({
       env: "production",
@@ -17,7 +44,7 @@ function Footer() {
   }, []);
   return (
     <footer>
-      <FooterHeader />
+      <FooterHeader theme={theme} />
       <FooterContent />
       <FooterSeparator />
       <FooterBottom />
@@ -25,10 +52,15 @@ function Footer() {
   );
 }
 
-function FooterHeader() {
+function FooterHeader({ theme }) {
   return (
     <a href="/#/">
-      <img className="logo" src={logo} alt="Focus logo" />
+      <img
+        className="logo"
+        src={logo}
+        alt="Focus logo"
+        style={{ filter: theme === "dark" ? "invert(1)" : "none" }}
+      />
       <h1>Focus</h1>
     </a>
   );

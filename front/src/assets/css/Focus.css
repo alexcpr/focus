@@ -174,133 +174,153 @@
     }
 }
 
-:root[data-theme="light"] {
+:root[data-theme=light] {
     --text: #140c18;
     --background: #f8f5fa;
     --primary: #8f49bc;
     --secondary: #bc8bda;
     --accent: #ab67d5;
     --border: #eee;
+    --footer: rgba(5, 3, 22, 0.05);
+    --input: white;
+    --th: #f2f2f2
 }
 
-:root[data-theme="dark"] {
+:root[data-theme=dark] {
     --text: #efe7f3;
-    --background: #08050a;
+    --background: #151515;
     --primary: #8a43b6;
     --secondary: #562574;
     --accent: #6e2a98;
+    --border: #2a1a2f;
+    --footer: #1d1d1d;
+    --input: rgb(88, 88, 88);
+    --th: #1e1e1e
 }
 
 * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    scroll-behavior: smooth;
+    scroll-behavior: smooth
+}
+
+.hero h1,
+body {
+    color: var(--text)
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--background);
-    color: var(--text);
+    font-family: "Poppins", sans-serif;
+    background: var(--background)
 }
 
 header {
     padding: 20px;
     border-bottom: 1px solid var(--border);
-    display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-around
 }
 
-header h1,
-footer h1 {
+footer h1,
+header h1 {
     font-size: 16px;
     color: var(--text);
-    margin-left: 15px;
+    margin-left: 15px
 }
 
 .logo {
     width: 32px;
     height: 32px;
+
+    filter: ($ {
+            isDarkMode ? 'invert(1)': 'none'
+        })
 }
 
-header a,
-footer>a {
+footer>a,
+header a {
     text-decoration: none;
     display: flex;
-    align-items: center;
+    align-items: center
 }
 
 .footer-bottom a {
     text-decoration: none;
     color: var(--primary);
     font-style: italic;
-    transition: color 0.3s ease;
+    transition: color .3s ease
 }
 
 .footer-bottom a:hover {
-    color: var(--secondary);
+    color: var(--secondary)
 }
 
-.links {
-    display: flex;
+.hero,
+.links,
+footer,
+header {
+    display: flex
 }
 
 .links a {
     margin: 0 18px;
     color: var(--text);
     font-size: 16px;
-    transition: opacity 0.3s ease;
-    cursor: pointer;
+    transition: opacity .3s ease;
+    cursor: pointer
 }
 
 .links a svg {
-    margin-right: 5px;
+    margin-right: 5px
 }
 
+.grid-item a:hover,
 .links a:hover {
-    opacity: 0.6;
+    opacity: .6
 }
 
 .hero h1 {
     font-size: 68px;
-    color: var(--text);
     margin: 0;
-    width: 700px;
+    width: 700px
 }
 
 .hero {
     position: relative;
-    display: flex;
     align-items: center;
     justify-content: space-around;
-    padding: 50px 200px;
-    padding-bottom: 0;
-    flex-flow: row wrap-reverse;
+    padding: 50px 200px 0;
+    flex-flow: row wrap-reverse
 }
 
 .color-effect {
     background: linear-gradient(120deg, var(--primary), var(--accent));
     background-clip: text;
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color: transparent
 }
 
 .font-effect {
     font-style: italic;
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: var(--text);
-    color: transparent;
+    color: transparent
 }
 
 .hero img {
     width: 400px;
-    height: 400px;
+    height: 400px
 }
 
 .hero-text p {
     text-align: justify;
-    width: 700px;
+    width: 700px
+}
+
+.burger-menu,
+.grid-item a {
+    transition: opacity .3s ease
 }
 
 .burger-menu {
@@ -308,32 +328,30 @@ footer>a {
     position: absolute;
     top: 26px;
     right: 30px;
-    font-size: 24px;
-    transition: opacity 0.3s ease;
+    font-size: 24px
 }
 
 .burger-menu.visible {
-    opacity: 1;
+    opacity: 1
 }
 
 .burger-menu.hidden {
-    opacity: 0;
+    opacity: 0
 }
 
 footer {
-    background: rgba(5, 3, 22, 0.05);
-    display: flex;
+    background: var(--footer);
     flex-direction: column;
     gap: 2em;
     border-radius: 10px;
     margin: 100px 200px;
-    padding: 3em 5em;
+    padding: 3em 5em
 }
 
 .footer-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-gap: 20px;
+    grid-gap: 20px
 }
 
 .footer-separator {
@@ -341,59 +359,54 @@ footer {
     height: 1px;
     background-color: var(--text);
     opacity: 10%;
-    margin-top: 1em;
+    margin-top: 1em
 }
 
 .grid-item {
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 1em
 }
 
 .grid-item a {
     text-decoration: none;
     color: var(--text);
-    font-size: 16px;
-    transition: opacity 0.3s ease;
-}
-
-.grid-item a:hover {
-    opacity: 0.6;
+    font-size: 16px
 }
 
 .grid-item span {
     opacity: .5;
-    text-transform: uppercase;
+    text-transform: uppercase
 }
 
 footer p {
-    display: block;
+    display: block
 }
 
 .heart {
-    color: red;
+    color: red
 }
 
 .gallery {
     margin-top: 50px;
-    padding: 0 200px;
+    padding: 0 200px
 }
 
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
+    gap: 25px
 }
 
 .item-container {
     display: flex;
     align-items: flex-start;
     gap: 20px;
-    flex-wrap: wrap;
+    flex-wrap: wrap
 }
 
 .comment-section button {
-    margin: 15px 0;
+    margin: 15px 0
 }
 
 .comment {
@@ -401,15 +414,16 @@ footer p {
     flex-direction: row;
     justify-content: space-between;
     margin: 10px 0;
-    column-gap: 50px;
+    column-gap: 50px
 }
 
-.comment span {
-    text-align: justify;
+.comment span,
+.gallery-item-description p {
+    text-align: justify
 }
 
 .comment small {
-    flex: 0 0 auto;
+    flex: 0 0 auto
 }
 
 .item-container .gallery-item {
@@ -418,24 +432,17 @@ footer p {
 }
 
 .item-container .gallery-item-description {
-    flex: 1 1 50%;
+    flex: 1 1 50%
 }
 
-.item-container .gallery-item-description h1,
-.comment-section h2 {
-    margin-bottom: 0;
+.comment-section h2,
+.item-container .gallery-item-description h1 {
+    margin-bottom: 0
 }
 
-.gallery-item-description p {
-    text-align: justify;
-}
-
+.item-container .gallery-item .vignette,
 .item-container .gallery-item img {
-    height: 500px;
-}
-
-.item-container .gallery-item .vignette {
-    height: 500px;
+    height: 500px
 }
 
 .modal {
@@ -444,52 +451,52 @@ footer p {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: rgba(0, 0, 0, .75);
     z-index: 1000;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center
 }
 
 .modal-content {
     position: relative;
     max-width: 90%;
     max-height: 90%;
-    overflow: auto;
+    overflow: auto
 }
 
 .modal-content img {
     max-width: 100%;
     max-height: 100%;
     display: block;
-    margin: 0 auto;
+    margin: 0 auto
 }
 
 .modal-open {
-    overflow: hidden;
+    overflow: hidden
 }
 
 .gallery-item img {
     width: 100%;
     height: 100%;
     border-radius: 10px;
-    object-fit: cover;
+    object-fit: cover
 }
 
 .gallery-item:hover {
-    transform: scale(1.05);
+    transform: scale(1.05)
 }
 
 .gallery-item:active {
-    transform: scale(1);
+    transform: scale(1)
 }
 
 .gallery-item {
     position: relative;
     display: inline-block;
-    transition: transform 0.3s ease;
+    transition: transform .3s ease;
     border-radius: 10px;
-    min-height: 500px;
+    min-height: 500px
 }
 
 .vignette {
@@ -499,104 +506,157 @@ footer p {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, .8) 100%);
-    pointer-events: none;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, .8) 100%);
+    pointer-events: none
 }
 
+.account,
+.admin,
 .contact,
 .login,
-.register,
-.account,
-.admin {
+.register {
     padding: 0 200px;
     display: flex;
     flex-flow: column wrap;
-    align-items: center;
+    align-items: center
 }
 
 .admin-buttons {
-    display: flex;
-    flex-flow: column wrap;
-    justify-content: center;
-    align-items: center;
     gap: 20px;
     margin-bottom: 20px;
-    width: 400px;
+    width: 400px
 }
 
-.admin-buttons button {
-    width: 100%;
+.admin-buttons button,
+.comments-page .delete,
+.messages-page .delete {
+    width: 100%
 }
 
+.account h1,
+.admin h1,
 .contact h1,
 .login h1,
-.register h1,
-.account h1,
-.admin h1 {
+.register h1 {
     font-size: 36px;
-    text-align: center;
+    text-align: center
 }
 
-.messages-page,
-.comments-page {
+.admin-buttons,
+.comments-page,
+.messages-page {
     display: flex;
     flex-flow: column wrap;
     justify-content: center;
-    align-items: center;
+    align-items: center
 }
 
 .admin-options {
     display: flex;
     justify-content: space-between;
     flex-flow: column wrap;
-    gap: 10px;
-}
-
-.comments-page .delete,
-.messages-page .delete {
-    width: 100%;
+    gap: 10px
 }
 
 .comment .delete {
     padding: 5px;
     border-radius: 50%;
-    margin-left: 2.5px;
+    margin-left: 2.5px
 }
 
-.passwordChange,
 .addPhoto,
-.editPhoto {
+.editPhoto,
+.passwordChange {
     display: flex;
     flex-flow: column wrap;
-    justify-content: center;
+    justify-content: center
 }
 
 .editPhoto .custom-file-input::after {
-    content: "";
+    content: ""
 }
 
 .account button {
     width: 50%;
-    margin-bottom: 20px;
+    margin-bottom: 20px
 }
 
 .passwordChange button {
-    width: 100%;
+    width: 100%
 }
 
 .delete {
-    background: #c0392b
+    background: #c53c2c
 }
 
 .delete:hover {
-    background: #e74c3c
+    background: #b13528
+}
+
+.theme-toggle {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-top: 3.5px;
+}
+
+.theme-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0
+}
+
+.theme-toggle .slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: background-color .4s;
+    border-radius: 34px;
+    overflow: hidden
+}
+
+.theme-toggle .slider-icon {
+    background-color: #fff;
+    height: 34px;
+    width: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .4s, background-color .4s
+}
+
+.theme-toggle .icon {
+    font-size: 20px;
+    transition: color .4s
+}
+
+input:checked+.slider {
+    background-color: var(--footer)
+}
+
+input:checked+.slider .slider-icon {
+    transform: translateX(26px);
+    background-color: #666
+}
+
+input:checked+.slider .icon {
+    color: var(--primary)
+}
+
+.slider .icon {
+    color: #fdb813
 }
 
 .delete-form {
     display: flex;
     flex-flow: column wrap;
     row-gap: 10px;
-    text-align: center;
+    text-align: center
 }
 
 .contact-form,
@@ -604,27 +664,27 @@ footer p {
 .register-form {
     width: 50%;
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column wrap
 }
 
 button.backBtn {
-    width: 200px;
-    margin-bottom: 20px;
+    width: 200px
 }
 
+.changePhotoBtn,
 .form-group,
-.changePhotoBtn {
-    margin-bottom: 20px;
+button.backBtn {
+    margin-bottom: 20px
 }
 
 label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 5px
 }
 
-label::after {
+form label::after {
     content: " *";
-    color: red;
+    color: red
 }
 
 input,
@@ -633,62 +693,64 @@ textarea {
     padding: 10px;
     border: 1px solid var(--border);
     border-radius: 5px;
+    background: var(--input);
+    color: var(--text)
 }
 
 textarea {
-    resize: vertical;
+    resize: vertical
 }
 
 .contact-form button,
 .login-form button,
 .register-form button {
     width: 150px;
-    margin: 0 auto;
+    margin: 0 auto
+}
+
+.custom-file-input,
+button {
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer
 }
 
 button {
     background: var(--primary);
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    font-size: 1.125rem;
+    border: 0;
+    transition: background .3s ease;
+    font-size: 1.125rem
 }
 
 button:hover {
-    background: var(--accent);
+    background: var(--accent)
 }
 
-input[type="file"] {
-    display: none;
+input[type=file] {
+    display: none
 }
 
 .custom-file-input {
     position: relative;
     display: inline-block;
-    background-color: var(--primary);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
+    background-color: var(--primary)
 }
 
 .custom-file-input-label {
     font-size: 16px;
-    margin-left: 20px;
+    margin-left: 20px
 }
 
 .custom-file-input-icon {
     position: absolute;
     top: 50%;
     left: 10px;
-    transform: translateY(-50%);
+    transform: translateY(-50%)
 }
 
 .custom-file-input:hover {
-    background-color: var(--accent);
+    background-color: var(--accent)
 }
 
 #toast {
@@ -751,187 +813,187 @@ input[type="file"] {
     animation: fadein .5s, fadeout .5s 2.5s
 }
 
-@media (max-width: 900px) {
+@media (max-width:900px) {
     .gallery-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr)
     }
 
     .footer-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr
     }
 
     footer {
         padding: 1em 2em;
+        margin: 50px 25px
     }
-
 
     .links {
         display: flex;
         opacity: 0;
         max-height: 0;
         pointer-events: none;
-        transition: max-height 0.8s ease, opacity 0.5s ease;
+        transition: max-height .5s ease-in-out, opacity .5s ease-in-out
     }
 
     .links.menu-open {
         opacity: 1;
         pointer-events: all;
-        max-height: 10%;
+        max-height: 10%
     }
 
     .burger-menu {
-        display: block;
+        display: block
+    }
+
+    .links,
+    header {
+        flex-direction: column
     }
 
     header {
-        flex-direction: column;
-        padding: 10px;
+        padding: 10px
     }
 
     .links {
-        flex-direction: column;
-        align-items: center;
+        align-items: center
     }
 
     header .logo {
-        margin-bottom: 10px;
+        margin-bottom: 10px
     }
 
     header .links a {
-        margin: 10px 0;
+        margin: 7.5px 0
     }
 
     .hero {
         padding: 50px 25px;
-        flex-flow: column-reverse;
+        flex-flow: column-reverse
     }
 
-    .gallery,
-    .contact,
-    .login,
     .account,
-    .register,
-    .admin {
-        padding: 0 25px;
+    .admin,
+    .contact,
+    .gallery,
+    .login,
+    .register {
+        padding: 0 25px
     }
 
     .admin-buttons {
-        width: unset;
+        width: unset
     }
 
-    .account button {
-        width: 100%;
-    }
-
+    .account button,
     .contact-form,
+    .hero-text p,
     .login-form,
     .register-form {
-        width: 100%;
-    }
-
-    footer {
-        margin: 50px 25px;
+        width: 100%
     }
 
     .hero img {
-        display: none;
+        display: none
     }
 
     .hero-text h1 {
         font-size: 48px;
-        width: 100%;
-    }
-
-    .hero-text p {
-        width: 100%;
+        width: 100%
     }
 }
 
-@media (max-width: 768px) {
-    .comment {
-        flex-direction: column;
+@media (max-width:768px) {
+
+    .comment,
+    .item-container {
+        flex-direction: column
     }
 
     .item-container {
-        flex-direction: column;
-        align-items: stretch;
+        align-items: stretch
     }
 
     .item-container .gallery-item {
         margin-right: 0;
-        margin-bottom: 20px;
+        margin-bottom: 20px
     }
 
     .gallery-item {
-        min-height: 125px;
+        min-height: 125px
     }
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 20px
 }
 
-th,
-td {
+td,
+th {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #ddd
+}
+
+td a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color .3s ease
+}
+
+td a:hover {
+    color: var(--accent)
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: var(--th)
 }
 
-tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-@media screen and (max-width: 600px) {
+@media screen and (max-width:600px) {
 
     table,
-    thead,
     tbody,
-    th,
     td,
+    th,
+    thead,
     tr {
-        display: block;
+        display: block
     }
 
+    td:before,
     th {
         position: absolute;
         top: -9999px;
-        left: -9999px;
+        left: -9999px
     }
 
     td {
-        border: none;
+        border: 0;
         border-bottom: 1px solid #eee;
         position: relative;
-        padding-left: 30%;
+        padding-left: 30%
     }
 
     td:before {
-        position: absolute;
         top: 50%;
         left: 10px;
         width: 45%;
         padding-right: 10px;
         white-space: nowrap;
         transform: translateY(-50%);
-        font-weight: bold;
+        font-weight: 700
     }
 
     td:nth-of-type(1):before {
-        content: "Nom";
+        content: "Nom"
     }
 
     td:nth-of-type(2):before {
-        content: "E-mail";
+        content: "E-mail"
     }
 
     td:nth-of-type(3):before {
-        content: "Message";
+        content: "Message"
     }
 }
