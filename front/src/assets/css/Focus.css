@@ -900,7 +900,8 @@ input[type=file] {
         flex-flow: column-reverse
     }
 
-    section {
+    section,
+    .gallery {
         padding: 0 25px
     }
 
