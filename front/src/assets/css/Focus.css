@@ -245,14 +245,16 @@ header a {
     align-items: center
 }
 
-.footer-bottom a {
+.footer-bottom a,
+.box a {
     text-decoration: none;
     color: var(--primary);
     font-style: italic;
     transition: color .3s ease
 }
 
-.footer-bottom a:hover {
+.footer-bottom a:hover,
+.box a:hover {
     color: var(--secondary)
 }
 
@@ -510,11 +512,7 @@ footer p {
     pointer-events: none
 }
 
-.account,
-.admin,
-.contact,
-.login,
-.register {
+section {
     padding: 0 200px;
     display: flex;
     flex-flow: column wrap;
@@ -533,11 +531,7 @@ footer p {
     width: 100%
 }
 
-.account h1,
-.admin h1,
-.contact h1,
-.login h1,
-.register h1 {
+section h1 {
     font-size: 36px;
     text-align: center
 }
@@ -813,6 +807,41 @@ input[type=file] {
     animation: fadein .5s, fadeout .5s 2.5s
 }
 
+.box {
+    display: flex;
+    flex-direction: column;
+    background: var(--footer);
+    width: 50%;
+    padding: 10px 25px;
+    border-radius: 25px;
+    margin: 10px;
+}
+
+.box div {
+    margin-bottom: 10px;
+}
+
+.box h2 {
+    margin: 10px 0;
+}
+
+.legal h1 {
+    margin-bottom: 0;
+}
+
+.legal h3 {
+    margin-top: 0;
+}
+
+.box p {
+    margin-top: 0;
+    text-align: justify;
+}
+
+.box a {
+    text-decoration: none;
+}
+
 @media (max-width:900px) {
     .gallery-grid {
         grid-template-columns: repeat(2, 1fr)
@@ -871,12 +900,7 @@ input[type=file] {
         flex-flow: column-reverse
     }
 
-    .account,
-    .admin,
-    .contact,
-    .gallery,
-    .login,
-    .register {
+    section {
         padding: 0 25px
     }
 
@@ -951,6 +975,11 @@ th {
 }
 
 @media screen and (max-width:600px) {
+
+    .box {
+            width: 100%;
+            margin: 10px 0;
+        }
 
     table,
     tbody,

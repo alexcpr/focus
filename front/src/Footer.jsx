@@ -74,16 +74,14 @@ function FooterContent() {
         <DonateButton />
       </div>
       <div className="grid-item">
-        <span>LEGAL</span>
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="#">Cookies</a>
+        <span>Legal</span>
+        <a href="/#/legal">Mentions Légales</a>
       </div>
       <div className="grid-item">
         <span>Contact</span>
-        <a href="/#/contact">E-mail</a>
+        <a href="mailto:focus@alexandrecipor.com">E-mail</a>
         <a href="https://instagram.com/aleksshrv.art">Instagram</a>
-        <a href="https://github.com/alexcpr/focus">GitHub</a>
+        <a href="https://github.com/alexcpr/focus/issues">GitHub</a>
       </div>
     </div>
   );

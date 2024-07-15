@@ -17,6 +17,7 @@ import Admin from "./Admin";
 import Register from "./Register";
 import Account from "./Account";
 import Footer from "./Footer";
+import Legal from "./Legal";
 
 function Focus() {
   return (
@@ -99,6 +100,16 @@ function Focus() {
             <>
               <Header />
               <Register />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/legal"
+          element={
+            <>
+              <Header />
+              <Legal />
               <Footer />
             </>
           }
