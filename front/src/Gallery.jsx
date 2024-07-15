@@ -329,7 +329,7 @@ function Gallery({ onSelectPhoto, isAdminPanel }) {
                 src={`${window.location.origin}/images/${galleryItems[0].file_name}`}
                 onClick={() => handleClickSingle(galleryItems[0])}
               />
-              <div className="vignette"></div>
+              {/* <div className="vignette"></div> */}
             </div>
             <div className="gallery-item-description">
               <h1>{galleryItems[0].name}</h1>
@@ -360,7 +360,7 @@ function Gallery({ onSelectPhoto, isAdminPanel }) {
                 src={`${window.location.origin}/images/${item.file_name}`}
                 onClick={() => handleClick(item)}
               />
-              <div className="vignette"></div>
+              {/* <div className="vignette"></div> */}
             </div>
           ))}
         </div>
