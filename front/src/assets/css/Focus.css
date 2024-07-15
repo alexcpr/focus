@@ -896,13 +896,17 @@ input[type=file] {
     }
 
     .hero {
-        padding: 50px 25px;
+        padding: 25px;
         flex-flow: column-reverse
     }
 
     section,
     .gallery {
         padding: 0 25px
+    }
+
+    .gallery {
+        margin: 0;
     }
 
     .admin-buttons {
