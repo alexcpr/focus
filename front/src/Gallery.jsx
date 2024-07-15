@@ -180,7 +180,7 @@ function CommentSection({ itemId }) {
       </div>
       <div className="comment-section">
         <h2>
-          {comments.length} Commentaire{comments.length !== 0 ? "s" : ""}
+          {comments.length} Commentaire{comments.length > 1 ? "s" : ""}
         </h2>
         <div className="comments">
           {comments.map((comment, index) => (
