@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import logo from "./assets/img/logo.png";
 
 function Footer() {
-const [theme, setTheme] = useState(
-  document.documentElement.getAttribute("data-theme") || "light"
-);
+  const [theme, setTheme] = useState(
+    document.documentElement.getAttribute("data-theme") || "light"
+  );
   
   useEffect(() => {
     const observer = new MutationObserver((mutations) => {
@@ -67,6 +67,14 @@ function FooterHeader({ theme }) {
 }
 
 function FooterContent() {
+  const handleLegalClick = (e) => {
+    e.preventDefault();
+
+    window.location.href = `#/legal`;
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 1);
+  };
   return (
     <div className="footer-container">
       <div className="grid-item">
@@ -75,7 +83,9 @@ function FooterContent() {
       </div>
       <div className="grid-item">
         <span>Legal</span>
-        <a href="/#/legal">Mentions Légales</a>
+        <a href="/#/legal" onClick={handleLegalClick}>
+          Mentions Légales
+        </a>
       </div>
       <div className="grid-item">
         <span>Contact</span>
