@@ -240,21 +240,25 @@ header h1 {
 
 footer>a,
 header a {
-    text-decoration: none;
     display: flex;
     align-items: center
 }
 
 .footer-bottom a,
-.box a {
-    text-decoration: none;
+footer>a,
+header a {
+    text-decoration: none
+}
+
+.box a,
+.footer-bottom a {
     color: var(--primary);
     font-style: italic;
     transition: color .3s ease
 }
 
-.footer-bottom a:hover,
-.box a:hover {
+.box a:hover,
+.footer-bottom a:hover {
     color: var(--secondary)
 }
 
@@ -286,7 +290,7 @@ header {
     font-size: 68px;
     margin: 0;
     width: 700px;
-    text-align: left;
+    text-align: left
 }
 
 .hero {
@@ -439,13 +443,20 @@ footer p {
 }
 
 .comment-section h2,
-.item-container .gallery-item-description h1 {
+.item-container .gallery-item-description h1,
+.legal h1 {
     margin-bottom: 0
 }
 
 .item-container .gallery-item .vignette,
 .item-container .gallery-item img {
     height: 500px
+}
+
+.modal,
+section {
+    display: flex;
+    align-items: center
 }
 
 .modal {
@@ -456,9 +467,7 @@ footer p {
     height: 100%;
     background-color: rgba(0, 0, 0, .75);
     z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center
+    justify-content: center
 }
 
 .modal-content {
@@ -515,9 +524,7 @@ footer p {
 
 section {
     padding: 0 200px;
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center
+    flex-flow: column wrap
 }
 
 .admin-buttons {
@@ -593,7 +600,7 @@ section h1 {
     display: inline-block;
     width: 60px;
     height: 34px;
-    margin-top: 3.5px;
+    margin-top: 3.5px
 }
 
 .theme-toggle input {
@@ -815,32 +822,29 @@ input[type=file] {
     width: 50%;
     padding: 10px 25px;
     border-radius: 25px;
-    margin: 10px;
+    margin: 10px
 }
 
 .box div {
-    margin-bottom: 10px;
+    margin-bottom: 10px
 }
 
 .box h2 {
-    margin: 10px 0;
+    margin: 10px 0
 }
 
-.legal h1 {
-    margin-bottom: 0;
-}
-
+.box p,
 .legal h3 {
-    margin-top: 0;
+    margin-top: 0
 }
 
 .box p {
-    margin-top: 0;
-    text-align: justify;
+    text-align: justify
 }
 
-.box a {
-    text-decoration: none;
+.box a,
+td a {
+    text-decoration: none
 }
 
 @media (max-width:900px) {
@@ -901,13 +905,13 @@ input[type=file] {
         flex-flow: column-reverse
     }
 
-    section,
-    .gallery {
+    .gallery,
+    section {
         padding: 0 25px
     }
 
     .gallery {
-        margin: 0;
+        margin: 0
     }
 
     .admin-buttons {
@@ -968,7 +972,6 @@ th {
 
 td a {
     color: var(--primary);
-    text-decoration: none;
     transition: color .3s ease
 }
 
@@ -981,11 +984,10 @@ th {
 }
 
 @media screen and (max-width:600px) {
-
     .box {
-            width: 100%;
-            margin: 10px 0;
-        }
+        width: 100%;
+        margin: 10px 0
+    }
 
     table,
     tbody,
@@ -998,16 +1000,7 @@ th {
 
     td:before,
     th {
-        position: absolute;
-        top: -9999px;
-        left: -9999px
-    }
-
-    td {
-        border: 0;
-        border-bottom: 1px solid #eee;
-        position: relative;
-        padding-left: 30%
+        position: absolute
     }
 
     td:before {
@@ -1018,6 +1011,18 @@ th {
         white-space: nowrap;
         transform: translateY(-50%);
         font-weight: 700
+    }
+
+    th {
+        top: -9999px;
+        left: -9999px
+    }
+
+    td {
+        border: 0;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 30%
     }
 
     td:nth-of-type(1):before {
